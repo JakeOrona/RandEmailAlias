@@ -1,4 +1,4 @@
-# v2.3-Beta
+# v2.4-beta
 
 import random
 import string
@@ -17,13 +17,12 @@ class RandomEmailAliasGenerator:
         self.master.title("Random Email Alias Generator - BearBones")
 
         # Set window size for responsive window
-        self.master.rowconfigure((0,1), weight=1, minsize=150)
-        self.master.columnconfigure((0,1), weight=1, minsize=150)
+        self.master.rowconfigure((0,1,2), weight=1, minsize=100)
+        self.master.columnconfigure((0), weight=1, minsize=100)
 
         # Load the image
         image = Image.open(r"C:\Users\Jake\REAG-BG.jpg")
         background_image = ImageTk.PhotoImage(image)
-        
 
         # Create a label for the image
         background_label = tk.Label(self.master, image=background_image)
@@ -32,15 +31,15 @@ class RandomEmailAliasGenerator:
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=5, sticky="e")
+        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for all buttons
         buttons_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        buttons_frame.grid(row=0, column=1, columnspan=1, padx=5, pady=5, sticky="e")
+        buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for feeling lukcy output
         feeling_lucky_output_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        feeling_lucky_output_frame.grid(row=1, column=1, columnspan=1, padx=10, pady=10, sticky="e")
+        feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email label and input field in base_email_frame
         tk.Label(base_email_frame, text="Base Email:").grid(row=0, column=0, padx=10, pady=10)
@@ -116,8 +115,8 @@ class RandomEmailAliasGenerator:
         base_alias = self.base_alias.get()
 
         if ts_toggle.get():
-            now = datetime.datetime.now()
-            timestamp = now.strftime("%H-%M-%S.%f")
+            now = datetime.datetime.utcnow()
+            timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
             random_string = ''.join(timestamp)
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
