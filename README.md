@@ -1,6 +1,4 @@
-# RandEmailAlias_v2
-
-v2.1-beta now includes macOS application.
+# RandEmailAlias_v2.2-beta
 
 Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias.
 
