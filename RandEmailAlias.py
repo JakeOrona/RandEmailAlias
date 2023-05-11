@@ -14,7 +14,7 @@ class RandomEmailAliasGenerator:
     def __init__(self, master):
         """Initializes the GUI"""
         self.master = master
-        self.master.title("Random Email Alias Generator - BearBones")
+        self.master.title("Random Email Alias Generator - BearBones ʕ º ᴥ ºʔ")
 
         # Set window size for responsive window
         self.master.rowconfigure((0,1,2), weight=1, minsize=100)
