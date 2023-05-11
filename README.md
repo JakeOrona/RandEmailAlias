@@ -1,8 +1,8 @@
-# RandEmailAlias_v2.2-beta
+# RandEmailAlias_v2.3-beta
 
-Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias.
+Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp.
 
-New Feature! Override random alias with a timestamp!
+New Feature! Background Image!
 
 Installation: Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application.
 
@@ -19,6 +19,6 @@ tkinter | pyperclip | threading | datetime
 
 Install the libraries using pip in terminal: pip install <library_name>
 
-To run, [download the source .py file](https://github.com/JakeOrona/RandEmailAlias/blob/master/RandEmailAlias_v2.2-beta.py) and use terminal to launch the python program with the following command (you may need to move the file to correct directory/change directory/adjust your PATH to include Python 3 and the file location. (Google is your friend or ask me for help):
+To run, download the source .py and use terminal to launch the python program with the following command (you may need to move the file to correct directory/change directory/adjust your PATH to include Python 3 and the file location. (Google is your friend or ask me for help):
 
 python RandEmailAlias_v2.2-beta.py OR python3 RandemailAlias_v2.2-beta.py
