@@ -1,4 +1,4 @@
-# v2.3-Beta
+# v2.4-beta
 
 import random
 import string
@@ -14,16 +14,15 @@ class RandomEmailAliasGenerator:
     def __init__(self, master):
         """Initializes the GUI"""
         self.master = master
-        self.master.title("Random Email Alias Generator - BearBones")
+        self.master.title("Random Email Alias Generator - BearBones ʕ º ᴥ ºʔ")
 
         # Set window size for responsive window
-        self.master.rowconfigure((0,1), weight=1, minsize=150)
-        self.master.columnconfigure((0,1), weight=1, minsize=150)
+        self.master.rowconfigure((0,1,2), weight=1, minsize=100)
+        self.master.columnconfigure((0), weight=1, minsize=100)
 
         # Load the image
         image = Image.open(r"C:\Users\Jake\REAG-BG.jpg")
         background_image = ImageTk.PhotoImage(image)
-        
 
         # Create a label for the image
         background_label = tk.Label(self.master, image=background_image)
@@ -32,15 +31,15 @@ class RandomEmailAliasGenerator:
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=5, sticky="e")
+        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for all buttons
         buttons_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        buttons_frame.grid(row=0, column=1, columnspan=1, padx=5, pady=5, sticky="e")
+        buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for feeling lukcy output
         feeling_lucky_output_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        feeling_lucky_output_frame.grid(row=1, column=1, columnspan=1, padx=10, pady=10, sticky="e")
+        feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email label and input field in base_email_frame
         tk.Label(base_email_frame, text="Base Email:").grid(row=0, column=0, padx=10, pady=10)
@@ -49,13 +48,13 @@ class RandomEmailAliasGenerator:
         self.base_email.focus()
 
         # Base alias label and input field
-        tk.Label(base_email_frame, text="Base Alias: IE: 'oek-123'").grid(row=1, column=0, padx=10, pady=10)
+        tk.Label(base_email_frame, text="Base Alias: IE: 'TEST'").grid(row=1, column=0, padx=10, pady=10)
         self.base_alias = tk.Entry(base_email_frame, width=30)
         self.base_alias.grid(row=1, column=1, padx=10, pady=10)
 
          # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override\n(Generate Alias Email Button only)", variable=ts_toggle, onvalue=True, offvalue=False)
+        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override\nYY-MM-DD-HH.MM.SS\n('Generate Alias Email' button only)", variable=ts_toggle, onvalue=True, offvalue=False)
         checkbutton.grid(row=2, column=0, padx=10, pady=10)
 
         # Generated email alias label and output field
@@ -73,7 +72,7 @@ class RandomEmailAliasGenerator:
         self.generate_test_button = tk.Button(buttons_frame, text="Generate Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
         self.generate_test_button.grid(row=1, column=1, columnspan=1, padx=10, pady=10)
         # Test  email button info
-        tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+oek-123.abc123@gmail.com",wraplength=300).grid(row=0, column=1, columnspan=1, padx=10, pady=10)
+        tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+TEST.abc123@gmail.com",wraplength=300).grid(row=0, column=1, columnspan=1, padx=10, pady=10)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
@@ -95,7 +94,7 @@ class RandomEmailAliasGenerator:
 
         # Label to display button click confirmation message
         self.click_confirmation_label = tk.Label(buttons_frame, text="")
-        self.click_confirmation_label.grid(row=1, column=2, padx=10, pady=10)
+        self.click_confirmation_label.grid(row=0, column=2, padx=10, pady=10)
 
     def generate_random_email_alias(self):
         """Generates a random email alias based on a base email. 6 chars"""
@@ -116,8 +115,8 @@ class RandomEmailAliasGenerator:
         base_alias = self.base_alias.get()
 
         if ts_toggle.get():
-            now = datetime.datetime.now()
-            timestamp = now.strftime("%H-%M-%S.%f")
+            now = datetime.datetime.utcnow()
+            timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
             random_string = ''.join(timestamp)
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
@@ -162,16 +161,16 @@ class RandomEmailAliasGenerator:
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
         pyperclip.copy(self.email_alias.get())
-        self.copy_label.config(text="Copied to clipboard!", fg="green")
+        self.copy_label.config(text="COPIED", fg="green")
         # Reset label text after 2 seconds
         t = threading.Timer(2.0, self.reset_copy_confirmation)
         t.start()
 
     def click_confirmation(self):
         """When button clicked display confirmation"""
-        self.click_confirmation_label.config(text="uWu uWu", fg="pink")
+        self.click_confirmation_label.config(text="ʕ º ᴥ ºʔ", fg="Blue")
         # Reset label text after 2 seconds
-        t = threading.Timer(2.0, self.reset_click_confirmation)
+        t = threading.Timer(1.0, self.reset_click_confirmation)
         t.start()
 
     def reset_click_confirmation(self):
