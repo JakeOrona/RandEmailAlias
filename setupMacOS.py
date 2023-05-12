@@ -1,7 +1,7 @@
 from setuptools import setup
 
 APP = ['RandEmailAlias.py']
-DATA_FILES = ["REAG-BG-.jpg"]
+DATA_FILES = ["REAG-BG.jpg"]
 OPTIONS = {
     'packages': ['random', 'string', 'smtplib', 'ssl', 'tkinter', 'pyperclip', 'threading'],
     'iconfile': 'icon.icns',
