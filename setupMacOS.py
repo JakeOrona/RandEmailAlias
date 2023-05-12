@@ -8,10 +8,11 @@ Usage:
 from setuptools import setup
 
 APP = ['RandEmailAlias.py']
-DATA_FILES = ['/Users/jake/Documents/REAG-BG.jpg']
+DATA_FILES = []
 OPTIONS = {
     'iconfile': '/Users/jake/Documents/REAM_icon.icns',
-    'packages': ['random', 'string', 'smtplib', 'ssl', 'tkinter', 'pyperclip', 'threading', 'datetime', 'PIL']}
+    'packages': ['random', 'string', 'smtplib', 'ssl', 'tkinter', 'pyperclip', 'threading', 'datetime', 'PIL'],
+    'plist': {'CFBundleShortVersionString': '0.2.4'}}
 
 setup(
     app=APP,
