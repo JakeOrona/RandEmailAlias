@@ -48,13 +48,13 @@ class RandomEmailAliasGenerator:
         self.base_email.focus()
 
         # Base alias label and input field
-        tk.Label(base_email_frame, text="Base Alias: IE: 'oek-123'").grid(row=1, column=0, padx=10, pady=10)
+        tk.Label(base_email_frame, text="Base Alias: IE: 'TEST'").grid(row=1, column=0, padx=10, pady=10)
         self.base_alias = tk.Entry(base_email_frame, width=30)
         self.base_alias.grid(row=1, column=1, padx=10, pady=10)
 
          # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override\n(Generate Alias Email Button only)", variable=ts_toggle, onvalue=True, offvalue=False)
+        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override\nYY-MM-DD-HH.MM.SS\n('Generate Alias Email' button only)", variable=ts_toggle, onvalue=True, offvalue=False)
         checkbutton.grid(row=2, column=0, padx=10, pady=10)
 
         # Generated email alias label and output field
@@ -72,7 +72,7 @@ class RandomEmailAliasGenerator:
         self.generate_test_button = tk.Button(buttons_frame, text="Generate Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
         self.generate_test_button.grid(row=1, column=1, columnspan=1, padx=10, pady=10)
         # Test  email button info
-        tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+oek-123.abc123@gmail.com",wraplength=300).grid(row=0, column=1, columnspan=1, padx=10, pady=10)
+        tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+TEST.abc123@gmail.com",wraplength=300).grid(row=0, column=1, columnspan=1, padx=10, pady=10)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
@@ -94,7 +94,7 @@ class RandomEmailAliasGenerator:
 
         # Label to display button click confirmation message
         self.click_confirmation_label = tk.Label(buttons_frame, text="")
-        self.click_confirmation_label.grid(row=1, column=2, padx=10, pady=10)
+        self.click_confirmation_label.grid(row=0, column=2, padx=10, pady=10)
 
     def generate_random_email_alias(self):
         """Generates a random email alias based on a base email. 6 chars"""
@@ -161,16 +161,16 @@ class RandomEmailAliasGenerator:
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
         pyperclip.copy(self.email_alias.get())
-        self.copy_label.config(text="Copied to clipboard!", fg="green")
+        self.copy_label.config(text="COPIED", fg="green")
         # Reset label text after 2 seconds
         t = threading.Timer(2.0, self.reset_copy_confirmation)
         t.start()
 
     def click_confirmation(self):
         """When button clicked display confirmation"""
-        self.click_confirmation_label.config(text="uWu uWu", fg="pink")
+        self.click_confirmation_label.config(text="ʕ º ᴥ ºʔ", fg="Blue")
         # Reset label text after 2 seconds
-        t = threading.Timer(2.0, self.reset_click_confirmation)
+        t = threading.Timer(1.0, self.reset_click_confirmation)
         t.start()
 
     def reset_click_confirmation(self):
