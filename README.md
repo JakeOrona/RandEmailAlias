@@ -2,7 +2,7 @@
 
 Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp (YY-MM-DD-HH.MM.SS).
 
-New Features: Background Image, vertical formatting and better window responsiveness
+New Features: Background Image(windows only, macOS comming soon), vertical formatting and better window responsiveness
 
 Installation: Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application.
 
