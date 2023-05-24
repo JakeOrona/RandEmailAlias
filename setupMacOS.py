@@ -7,10 +7,10 @@ Usage:
 
 from setuptools import setup
 
-APP = ['RandEmailAlias.py']
+APP = ['RandEmailAlias-mac.py']
 DATA_FILES = []
 OPTIONS = {
-    'iconfile': '/Users/jake/Documents/REAM_icon.icns',
+    'iconfile': 'resources/REAM_icon.icns',
     'packages': ['random', 'string', 'smtplib', 'ssl', 'tkinter', 'pyperclip', 'threading', 'datetime', 'PIL'],
     'plist': {'CFBundleShortVersionString': '0.2.4'}}
 
