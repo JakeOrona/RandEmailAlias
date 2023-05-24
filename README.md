@@ -15,7 +15,7 @@ Installation: Navigate to the [lastest release in repo](https://github.com/JakeO
 
 Mac users may receive warning when opening app for first time. This app is not signed with a developer certificate. I built the app using py2app. You may need to right click on application -> open. A warning error will display. Click ok to close warning. Right click on app again -> open. Receive a warning label again, this time clicking open should proceed into app. This should clear the warning. You may need to repeat this if you move the application or if you download a new version. (Im not paying apple yet. When I get to swift, I get to swift).
 
-Windows users may need to run as administrator and/or follow a similar path as MacOS to bypass warning.
+Windows users may need to run as administrator and click "more info" -> "run anyway" to bypass warning.
 
 If you wish to run from source:
 
