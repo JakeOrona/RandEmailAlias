@@ -108,19 +108,17 @@ class RandomEmailAliasGenerator:
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if re.match(pattern, email):
-            return True
-        else:
-            return False
+        if email != '':
+            pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            return bool(re.match(pattern, email))
+        else: return False
         
     def is_base_alias_not_null(self, alias):
-        #check for anything in base alias. Will need to update with regular expression to handle invlaid alias characters
-        alias=self.base_alias.get()
-        if alias != "":
-            return True
-        else:
-            return False
+        # Check if the base alias is not null using regular expression
+        if alias != '':
+            pattern = r'^[a-zA-Z0-9._%-]*$'
+            return bool(re.match(pattern, alias))
+        else: return False
     
     def generate_random_email_alias(self):
         """Generates a random email alias based on a base email. 6 chars"""
@@ -248,7 +246,7 @@ class RandomEmailAliasGenerator:
 
 def main():
     
-    image = Image.open('REAG-BG.jpg')
+    image = Image.open('resources/REAG-BG.jpg')
     icon = pystray.Icon('REAG', image, 'Random Email Alias Generator')
 
     def on_icon_clicked(icon):
