@@ -1,10 +1,8 @@
-# v2.4-beta
+# v2.4.1-beta-macOS
 
 import random
 import string
 import tkinter as tk
-# from ttkthemes import ThemedTk
-import pyperclip
 import threading
 import datetime
 import re
@@ -13,8 +11,6 @@ from urllib.request import urlopen
 from PIL import ImageTk, Image
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
-
-
 
 class RandomEmailAliasGenerator:
     def __init__(self, master):
@@ -106,13 +102,17 @@ class RandomEmailAliasGenerator:
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return bool(re.match(pattern, email))
+        if email != '':
+            pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            return bool(re.match(pattern, email))
+        else: return False
         
     def is_base_alias_not_null(self, alias):
         # Check if the base alias is not null using regular expression
-        pattern = r'^[a-zA-Z0-9._%-]*$'
-        return bool(re.match(pattern, alias))
+        if alias != '':
+            pattern = r'^[a-zA-Z0-9._%-]*$'
+            return bool(re.match(pattern, alias))
+        else: return False
     
     def generate_random_email_alias(self):
         """Generates a random email alias based on a base email. 6 chars"""
@@ -170,7 +170,7 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, f"ENTER A BASE ALIAS")
+            self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
     
     def generate_email_alias(self):
@@ -213,11 +213,13 @@ class RandomEmailAliasGenerator:
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
-        pyperclip.copy(self.email_alias.get())
+        self.master.clipboard_clear()
+        self.master.clipboard_append(self.email_alias.get())
         self.copy_label.config(text="EMAIL - COPIED", fg="green")
         # Reset label text after 2 seconds
         t = threading.Timer(2.0, self.reset_copy_confirmation)
         t.start()
+
 
     def click_confirmation(self):
         """When button clicked display confirmation"""
