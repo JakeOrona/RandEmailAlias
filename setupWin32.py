@@ -32,5 +32,5 @@ setup(
     version="0.2.4",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
-    executables=[Executable("REAG-Win-tray.py", base=base)]
+    executables=[Executable("RandEmailAlias-win32.py", base=base)]
 )
