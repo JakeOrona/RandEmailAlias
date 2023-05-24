@@ -108,13 +108,17 @@ class RandomEmailAliasGenerator:
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return bool(re.match(pattern, email))
+        if email != '':
+            pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            return bool(re.match(pattern, email))
+        else: return False
         
     def is_base_alias_not_null(self, alias):
         # Check if the base alias is not null using regular expression
-        pattern = r'^[a-zA-Z0-9._%-]*$'
-        return bool(re.match(pattern, alias))
+        if alias != '':
+            pattern = r'^[a-zA-Z0-9._%-]*$'
+            return bool(re.match(pattern, alias))
+        else: return False
     
     def generate_random_email_alias(self):
         """Generates a random email alias based on a base email. 6 chars"""
