@@ -176,7 +176,7 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, f"ENTER A BASE ALIAS")
+            self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
     
     def generate_email_alias(self):
@@ -214,7 +214,7 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.feeling_lucky_output.delete('1.0', tk.END)
-            self.feeling_lucky_output.insert('1.0', f"ENTER A BASE ALIAS")
+            self.feeling_lucky_output.insert('1.0', f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
     def copy_to_clipboard(self):
@@ -244,30 +244,40 @@ class RandomEmailAliasGenerator:
         """Reset copy confirmation label text"""
         self.copy_label.config(text="")
 
-def main():
-    
-    image = Image.open('resources/REAG-BG.jpg')
-    icon = pystray.Icon('REAG', image, 'Random Email Alias Generator')
+class MainApp:
+    def __init__(self):
+        self.root = None
+        self.image = Image.open('resources/REAG-BG.jpg')
+        self.icon = pystray.Icon('REAG', self.image, 'Random Email Alias Generator')
 
-    def on_icon_clicked(icon):
-        REAGmain()
+    def on_icon_clicked(self, icon):
+        if self.root and self.root.winfo_exists():
+            self.root.deiconify()
+        else:
+            self.root = tk.Tk()
+            RandomEmailAliasGenerator(self.root)
+            self.root.protocol("WM_DELETE_WINDOW", lambda: self.on_window_closed())
+            self.root.mainloop()
 
-    def on_quit(icon, root):
+    def on_window_closed(self):
+        self.root.destroy()
+        self.root = None
+
+    def on_quit(self, icon):
+        if self.root:
+            self.root.destroy()
+            self.root = None
         icon.stop()
-        root.quit()
-    
-    def REAGmain():
-        global root 
-        root = tk.Tk()
-        RandomEmailAliasGenerator(root)
-        root.mainloop()
+            
 
-    menu = pystray.Menu(
-        pystray.MenuItem('Open REAG', on_icon_clicked),
-        pystray.MenuItem('Quit', lambda: on_quit(icon, root))
-    )
-    icon.menu = menu  # assign the menu to the icon object
-    icon.run()
+    def run(self):
+        menu = pystray.Menu(
+            pystray.MenuItem('Open REAG', lambda item, _: self.on_icon_clicked(self.icon)),
+            pystray.MenuItem('Quit', lambda item, _: self.on_quit(self.icon))
+        )
+        self.icon.menu = menu
+        self.icon.run()
 
 if __name__ == '__main__':
-    main()
+    app = MainApp()
+    app.run()

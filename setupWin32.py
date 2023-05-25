@@ -18,7 +18,7 @@ build_exe_options = {
     "PIL.ImageTk",
     "PIL.Image"
     ],
-    "include_files": ["C:\\Users\\Jake\\REAG-BG.jpg"]
+    "include_files": ["resources","resources\\REAG-BG.jpg"]
 }
 
 # GUI applications require a different base on Windows (the default is for a
@@ -29,8 +29,8 @@ if sys.platform == "win32":
 
 setup(
     name="RandEmailAlias",
-    version="0.2.4",
+    version="0.2.4.2",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
-    executables=[Executable("REAG-Win-tray.py", base=base)]
+    executables=[Executable("RandEmailAlias-win32.py", base=base)]
 )
