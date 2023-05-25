@@ -1,4 +1,5 @@
-# v2.4.1-beta-macOS
+# v2.4.2-beta-macOS
+# Feature: Auto-Copy to Clipboard when generate button clicked
 
 import random
 import string
@@ -72,9 +73,9 @@ class RandomEmailAliasGenerator:
         # Random email button info
         tk.Label(buttons_frame, text="Generate random alias\nie: jake+abc123@gmail.com").grid(row=0, column=0, columnspan=1, padx=5, pady=5)
 
-        # Generate test email alias button
-        self.generate_test_button = tk.Button(buttons_frame, text="Base Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
-        self.generate_test_button.grid(row=3, column=0, columnspan=1, padx=5, pady=5)
+        # Generate email alias button
+        self.generate_alias_button = tk.Button(buttons_frame, text="Base Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
+        self.generate_alias_button.grid(row=3, column=0, columnspan=1, padx=5, pady=5)
         # Test  email button info
         tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+TEST.abc123@gmail.com").grid(row=2, column=0, columnspan=1, padx=5, pady=5)
 
@@ -92,13 +93,9 @@ class RandomEmailAliasGenerator:
         self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
         self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=5)
 
-        # Label to display copy confirmation message
-        self.copy_label = tk.Label(buttons_frame, text="")
-        self.copy_label.grid(row=7, column=0, padx=5, pady=5)
-
-        # Label to display button click confirmation message
-        self.click_confirmation_label = tk.Label(buttons_frame, text="")
-        self.click_confirmation_label.grid(row=7, column=0, padx=5, pady=5)
+        # Label to display confirmation message
+        self.confirmation_label = tk.Label(buttons_frame, text="")
+        self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
@@ -114,7 +111,7 @@ class RandomEmailAliasGenerator:
             return bool(re.match(pattern, alias))
         else: return False
     
-    def generate_random_email_alias(self):
+    def generate_random_email_alias(self, copy_to_clipboard=True):
         """Generates a random email alias based on a base email. 6 chars"""
         base_email = self.base_email.get()
         # check for valid base email
@@ -123,18 +120,17 @@ class RandomEmailAliasGenerator:
             random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
-            # Click confirmation prompt
-            self.click_confirmation()
-            # Reset the copy label
-            self.copy_label.config(text="")
+            if copy_to_clipboard:
+                self.copy_to_clipboard()
+                self.generate_click_confirmation()
         else:
             # Display error message
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
             self.error_confirmation()
 
-    def generate_base_alias_email_alias(self, ts_toggle):
-        """Generates a test email alias based on a base email. 6 chars"""
+    def generate_base_alias_email_alias(self, ts_toggle, copy_to_clipboard=True):
+        """Generates a random email alias based on a base email and base alias. 6 chars"""
         base_email = self.base_email.get()
         base_alias = self.base_alias.get()
         # check for base alias not null
@@ -149,19 +145,14 @@ class RandomEmailAliasGenerator:
                     random_string = ''.join(timestamp)
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
-                    # Click confirmation prompt
-                    self.click_confirmation()
-                    # Reset the copy label
-                    self.copy_label.config(text="")
-
                 else:
                     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
-                    # Click confirmation prompt
-                    self.click_confirmation()
-                    # Reset the copy label
-                    self.copy_label.config(text="")
+                    
+                if copy_to_clipboard:
+                    self.copy_to_clipboard()
+                    self.alias_click_confirmation()
             else:
                 # Display error message
                 self.email_alias.delete(0, tk.END)
@@ -172,19 +163,6 @@ class RandomEmailAliasGenerator:
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
-    
-    def generate_email_alias(self):
-        """Generates a random email alias based on a base email. 6 chars"""
-        base_email = self.base_email.get()
-        username, domain = base_email.split('@')
-        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-        self.email_alias.delete(0, tk.END)
-        self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
-        self.email_alias.select_range(0, tk.END)
-        # Click confirmation prompt
-        self.click_confirmation()
-        # Reset the copy label
-        self.copy_label.config(text="")
 
     def feeling_lucky(self):
         """Generates 10 random email aliases at once using base_alias"""
@@ -199,7 +177,7 @@ class RandomEmailAliasGenerator:
                 self.feeling_lucky_output.delete('1.0', tk.END)
                 self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
-                self.click_confirmation()
+                self.lucky_click_confirmation()
             else:
                 # Display error message
                 self.feeling_lucky_output.delete('1.0', tk.END)
@@ -208,37 +186,63 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.feeling_lucky_output.delete('1.0', tk.END)
-            self.feeling_lucky_output.insert('1.0', f"ENTER A BASE ALIAS")
+            self.feeling_lucky_output.insert('1.0', f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
-        self.master.clipboard_clear()
-        self.master.clipboard_append(self.email_alias.get())
-        self.copy_label.config(text="EMAIL - COPIED", fg="green")
-        # Reset label text after 2 seconds
-        t = threading.Timer(2.0, self.reset_copy_confirmation)
+        if self.is_valid_base_email(self.email_alias.get()):
+            self.email_alias.clipboard_clear()  # Clear the clipboard
+            self.email_alias.clipboard_append(self.email_alias.get())  # Append the email alias to the clipboard
+            self.email_alias.update()  # Update the clipboard
+            self.confirmation_label.config(text="EMAIL COPIED", fg="White", bg="Green")
+            # Reset label text after 2 seconds
+            t = threading.Timer(2.0, self.reset_confirmation)
+            t.start()
+
+    def generate_click_confirmation(self):
+        """When button clicked display confirmation"""
+        self.generate_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
+        # Reset label text after 1 second
+        t = threading.Timer(0.1, self.reset_generate_button)
+        t.start()
+        
+    def alias_click_confirmation(self):
+        """When button clicked display confirmation"""
+        self.generate_alias_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
+        # Reset label text after 1 second
+        t = threading.Timer(0.1, self.reset_alias_button)
         t.start()
 
-
-    def click_confirmation(self):
+    def lucky_click_confirmation(self):
         """When button clicked display confirmation"""
-        self.click_confirmation_label.config(text="ʕ º ᴥ ºʔ", fg="green")
+        self.lucky_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
         # Reset label text after 1 second
-        t = threading.Timer(1.0, self.reset_click_confirmation)
+        t = threading.Timer(0.1, self.reset_lucky_button)
         t.start()
 
     def error_confirmation(self):
         """When invalid base email or null base alias display error"""
-        self.click_confirmation_label.config(text="(ノಠ益ಠ)ノ彡┻━┻", fg="Red")
+        self.confirmation_label.config(text="(ノಠ益ಠ)ノ彡┻━┻", fg="Red")
+        t = threading.Timer(1.0, self.reset_confirmation)
+        t.start()
 
-    def reset_click_confirmation(self):
+    def reset_generate_button(self):
+        """Reset generate email button text"""
+        self.generate_button.config(text="Random Email", fg= "Black", bg= "White")
+
+    def reset_alias_button(self):
+        """Reset generate alias button text"""
+        self.generate_alias_button.config(text="Base Alias Email", fg= "Black", bg= "White")
+
+    def reset_lucky_button(self):
+        """Reset feeling lucky button text"""
+        self.lucky_button.config(text="Feeling Lucky", fg= "Black", bg= "White")
+
+    def reset_confirmation(self):
         """Reset confirmation label text"""
-        self.click_confirmation_label.config(text="")
+        self.confirmation_label.config(text="", fg= "Black", bg="White")
 
-    def reset_copy_confirmation(self):
-        """Reset copy confirmation label text"""
-        self.copy_label.config(text="")
 
 def main():
     root = tk.Tk()
