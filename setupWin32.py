@@ -18,7 +18,7 @@ build_exe_options = {
     "PIL.ImageTk",
     "PIL.Image"
     ],
-    "include_files": ["C:\\Users\\Jake\\REAG-BG.jpg"]
+    "include_files": ["resources\\REAG-BG.jpg"]
 }
 
 # GUI applications require a different base on Windows (the default is for a
