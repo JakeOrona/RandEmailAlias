@@ -8,7 +8,7 @@ import datetime
 import re
 # import io
 #from urllib.request import urlopen
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 # import ssl
 # ssl._create_default_https_context = ssl._create_unverified_context
 

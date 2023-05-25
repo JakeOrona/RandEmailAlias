@@ -11,7 +11,7 @@ APP = ['RandEmailAlias-mac.py']
 DATA_FILES = ["resources", "resources/REAG-BG.jpg"]
 OPTIONS = {
     'iconfile': 'resources/REAM_icon.icns',
-    'packages': ['random', 'string', 'smtplib', 'tkinter', 're', 'threading', 'datetime', 'PIL'],
+    'packages': ['random', 'string', 'smtplib', 'tkinter', 're', 'threading', 'datetime'],
     'plist': {'CFBundleShortVersionString': '0.2.4.2'}}
 
 setup(
