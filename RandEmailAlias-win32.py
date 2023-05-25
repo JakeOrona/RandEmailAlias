@@ -249,22 +249,22 @@ def main():
     image = Image.open('resources/REAG-BG.jpg')
     icon = pystray.Icon('REAG', image, 'Random Email Alias Generator')
     global root
+    root = tk.Tk()
+    RandomEmailAliasGenerator(root)
 
     def on_icon_clicked(icon):
         REAGmain()
 
-    def on_quit(icon, root):
+    def on_quit(icon):
         icon.stop()
         root.quit()
     
     def REAGmain():
-        root = tk.Tk()
-        RandomEmailAliasGenerator(root)
         root.mainloop()
 
     menu = pystray.Menu(
         pystray.MenuItem('Open REAG', on_icon_clicked),
-        pystray.MenuItem('Quit', lambda: on_quit(icon, root))
+        pystray.MenuItem('Quit', lambda: on_quit(icon))
     )
     icon.menu = menu  # assign the menu to the icon object
     icon.run()
