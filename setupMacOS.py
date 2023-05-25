@@ -12,7 +12,7 @@ DATA_FILES = []
 OPTIONS = {
     'iconfile': 'resources/REAM_icon.icns',
     'packages': ['random', 'string', 'smtplib', 'ssl', 'tkinter', 'pyperclip', 'threading', 'datetime', 'PIL'],
-    'plist': {'CFBundleShortVersionString': '0.2.4'}}
+    'plist': {'CFBundleShortVersionString': '0.2.4.2'}}
 
 setup(
     app=APP,
