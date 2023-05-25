@@ -6,11 +6,11 @@ import tkinter as tk
 import threading
 import datetime
 import re
-import io
-from urllib.request import urlopen
+# import io
+#from urllib.request import urlopen
 from PIL import ImageTk, Image
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
+# import ssl
+# ssl._create_default_https_context = ssl._create_unverified_context
 
 class RandomEmailAliasGenerator:
     def __init__(self, master):
@@ -22,16 +22,16 @@ class RandomEmailAliasGenerator:
         self.master.rowconfigure((0,1,2), weight=1, minsize=30)
         self.master.columnconfigure((0), weight=1, minsize=30)
 
-        # Load the image
-        url = "https://i.imgur.com/yzC0PES.jpeg"
-        image_data = urlopen(url).read()
-        image = Image.open(io.BytesIO(image_data))
+        """# Load the image
+        # url = "https://i.imgur.com/yzC0PES.jpeg"
+        # image_data = urlopen(url).read()
+        image = Image.open('resources/REAG-BG.jpg')
         background_image = ImageTk.PhotoImage(image)
 
         # Create a label for the image
         background_label = tk.Label(self.master, image=background_image)
         background_label.place(x=0, y=0, relwidth=1, relheight=1)
-        background_label.image = background_image
+        background_label.image = background_image"""
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
