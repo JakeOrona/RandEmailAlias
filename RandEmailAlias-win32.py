@@ -176,7 +176,7 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, f"ENTER A BASE ALIAS")
+            self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
     
     def generate_email_alias(self):
@@ -214,7 +214,7 @@ class RandomEmailAliasGenerator:
         else:
             # Display error message
             self.feeling_lucky_output.delete('1.0', tk.END)
-            self.feeling_lucky_output.insert('1.0', f"ENTER A BASE ALIAS")
+            self.feeling_lucky_output.insert('1.0', f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
     def copy_to_clipboard(self):
@@ -248,6 +248,7 @@ def main():
     
     image = Image.open('resources/REAG-BG.jpg')
     icon = pystray.Icon('REAG', image, 'Random Email Alias Generator')
+    global root
 
     def on_icon_clicked(icon):
         REAGmain()
@@ -257,7 +258,6 @@ def main():
         root.quit()
     
     def REAGmain():
-        global root 
         root = tk.Tk()
         RandomEmailAliasGenerator(root)
         root.mainloop()
