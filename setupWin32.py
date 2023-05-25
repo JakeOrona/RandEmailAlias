@@ -29,7 +29,7 @@ if sys.platform == "win32":
 
 setup(
     name="RandEmailAlias",
-    version="0.2.4",
+    version="0.2.4.2",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
     executables=[Executable("RandEmailAlias-win32.py", base=base)]
