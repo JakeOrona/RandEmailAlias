@@ -1,4 +1,4 @@
-# RandEmailAlias_v2.4.3-beta
+# RandEmailAlias_v2.4.4-beta
 
 Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp (YY-MM-DD-HH.MM.SS).
 
@@ -8,8 +8,9 @@ System Toolbar only working on windows.
 
 MacOS users will need to wait until solution is found to run in system tool bar. May require rewriting in swift...
 
-# New Features:
-Auto-Copy generated output email when button clicked
+# v2.4.4-beta New Features:
+Alias History: Generated emails are saved with a timestamp. Click 'View Alias History' to view alias history.
+Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
 
 # v2.4.3 Misc Updates:
 Button click confirmation updated. Buttons now flash blue when clicked and valid output is generated.
