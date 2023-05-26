@@ -27,7 +27,7 @@ class RandomEmailAliasGenerator:
 
         # Set window size for responsive window
         self.master.rowconfigure((0,1,2), weight=1, minsize=30)
-        self.master.columnconfigure((0), weight=1, minsize=30)
+        self.master.columnconfigure((0,1), weight=1, minsize=30)
 
         # Load the image
         url = "https://i.imgur.com/yzC0PES.jpeg"
@@ -109,43 +109,60 @@ class RandomEmailAliasGenerator:
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
         # Alias History button
-        self.alias_history_button = tk.Button(history_output_frame, text="View Alias History", command=self.show_alias_history)
+        self.alias_history_button = tk.Button(history_output_frame, text="Show History", command=self.show_alias_history)
         self.alias_history_button.grid(row=0, column=0, padx=5, pady=5)
 
     def show_alias_history(self):
 
-        # Create a new window
+        """# Create a new window
         history_window = tk.Toplevel(self.master)
-        history_window.title("Alias History")
+        history_window.title("Alias History")"""
 
-        # Create new frame for alias history save/load buttons
-        history_function_frame = tk.Frame(history_window, relief="groove")
-        history_function_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
+        # Check if history frame already exists
+        if hasattr(self, 'history_frame'):
+            self.toggle_history()
+        else:
+            # Update History Button to toggle the visibility of the history section
+            self.alias_history_button.config(text="Hide History")
 
-        # Save alias history button
-        self.save_history_button = tk.Button(history_function_frame, text="Save Alias History", command=self.save_alias_history)
-        self.save_history_button.grid(row=0, column=0, padx=5, pady=5)
+            # Create a Frame for the collapsible history section
+            self.history_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
+            self.history_frame.grid(row=0, column=2, padx=2, pady=3, sticky="nsew")
 
-        # Load alias history button
-        self.load_history_button = tk.Button(history_function_frame, text="Load Alias History", command=self.load_alias_history)
-        self.load_history_button.grid(row=0, column=2, padx=5, pady=5)
+             # Create new frame for alias history save/load buttons in history frame
+            history_function_frame = tk.Frame(self.history_frame, relief="groove")
+            history_function_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create a Text widget to display the history
-        self.history_text = tk.Text(history_window, height=25, width=80)
-        self.history_text.grid(row=1, column=0, columnspan=1, padx=2, pady=3)
+            # Create a Text widget to display the history
+            self.history_text = tk.Text(self.history_frame, height=15, width=50)
+            self.history_text.grid(row=1, column=0, columnspan=1, padx=2, pady=3)
 
-        # Insert the history into the Text widget
-        for alias in self.alias_history:
-            self.history_text.insert(tk.END, alias + "\n")
+            # Save alias history button
+            self.save_history_button = tk.Button(history_function_frame, text="Save Alias History", command=self.save_alias_history)
+            self.save_history_button.grid(row=0, column=0, padx=5, pady=5)
 
-        # Make the window visible
-        history_window.mainloop()
+            # Load alias history button
+            self.load_history_button = tk.Button(history_function_frame, text="Load Alias History", command=self.load_alias_history)
+            self.load_history_button.grid(row=0, column=1, padx=5, pady=5)
+
+            # Insert the history into the Text widget
+            for alias in self.alias_history:
+                self.history_text.insert(tk.END, alias + "\n")
 
     def update_history_display(self):
         if hasattr(self, 'history_text'):  # Check if history_text attribute exists
             self.history_text.delete("1.0", tk.END)
             for alias in self.alias_history:
                 self.history_text.insert(tk.END, alias + "\n")
+
+    def toggle_history(self):
+        # Toggle the visibility of the history section
+        if self.history_frame.winfo_ismapped():
+            self.history_frame.grid_forget()
+            self.alias_history_button.config(text="Show History")
+        else:
+            self.history_frame.grid(row=0, column=1, columnspan=2, padx=2, pady=3)
+            self.alias_history_button.config(text="Hide History")
 
 
     def save_alias_history(self):
