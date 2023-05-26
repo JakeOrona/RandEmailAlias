@@ -214,6 +214,7 @@ class RandomEmailAliasGenerator:
         base_email = self.base_email.get()
         now = datetime.datetime.utcnow()
         timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
+        # check for valid base email
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
             random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
