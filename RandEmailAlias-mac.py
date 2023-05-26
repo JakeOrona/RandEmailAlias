@@ -1,5 +1,5 @@
-# v2.4.2-beta-macOS
-# Feature: Auto-Copy to Clipboard when generate button clicked
+# v2.4.3-beta-macOS
+# Feature: Alias History. Create button to display generated emails that have been auto-copied to clipboard
 
 import random
 import string
@@ -18,6 +18,9 @@ class RandomEmailAliasGenerator:
         """Initializes the GUI"""
         self.master = master
         self.master.title("R.E.A.G. ʕ º ᴥ ºʔ")
+
+        # create alias history array
+        self.alias_history = []
 
         # Set window size for responsive window
         self.master.rowconfigure((0,1,2), weight=1, minsize=30)
@@ -45,6 +48,10 @@ class RandomEmailAliasGenerator:
         # Create new frame for feeling lukcy output
         feeling_lucky_output_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
         feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
+
+        # Create new frame for alias history output
+        history_output_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
+        history_output_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email label and input field in base_email_frame
         tk.Label(base_email_frame, text="Base Email:").grid(row=0, column=0, padx=5, pady=5)
@@ -93,9 +100,29 @@ class RandomEmailAliasGenerator:
         self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
         self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=5)
 
+        # Alias History button
+        self.alias_history_button = tk.Button(history_output_frame, text="View Alias History", command=self.show_alias_history)
+        self.alias_history_button.grid(row=0, column=0, padx=5, pady=5)
+
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="")
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
+
+    def show_alias_history(self):
+        # Create a new window
+        history_window = tk.Toplevel(self.master)
+        history_window.title("Alias History")
+
+        # Create a Text widget to display the history
+        history_text = tk.Text(history_window, height=25, width=80)
+        history_text.pack()
+
+        # Insert the history into the Text widget
+        for alias in self.alias_history:
+            history_text.insert(tk.END, alias + "\n")
+
+        # Make the window visible
+        history_window.mainloop()
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
@@ -114,15 +141,19 @@ class RandomEmailAliasGenerator:
     def generate_random_email_alias(self, copy_to_clipboard=True):
         """Generates a random email alias based on a base email. 6 chars"""
         base_email = self.base_email.get()
+        now = datetime.datetime.utcnow()
+        timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
         # check for valid base email
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
             random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
+
             if copy_to_clipboard:
                 self.copy_to_clipboard()
                 self.generate_click_confirmation()
+                self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
         else:
             # Display error message
             self.email_alias.delete(0, tk.END)
@@ -133,6 +164,8 @@ class RandomEmailAliasGenerator:
         """Generates a random email alias based on a base email and base alias. 6 chars"""
         base_email = self.base_email.get()
         base_alias = self.base_alias.get()
+        now = datetime.datetime.utcnow()
+        timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
         # check for base alias not null
         if self.is_base_alias_not_null(base_alias):
             # Check for valid base email
@@ -140,8 +173,6 @@ class RandomEmailAliasGenerator:
                 username, domain = base_email.split('@')
 
                 if ts_toggle.get():
-                    now = datetime.datetime.utcnow()
-                    timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
                     random_string = ''.join(timestamp)
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
@@ -149,10 +180,11 @@ class RandomEmailAliasGenerator:
                     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
-                    
+
                 if copy_to_clipboard:
                     self.copy_to_clipboard()
                     self.alias_click_confirmation()
+                    self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
             else:
                 # Display error message
                 self.email_alias.delete(0, tk.END)
@@ -168,6 +200,8 @@ class RandomEmailAliasGenerator:
         """Generates 10 random email aliases at once using base_alias"""
         base_email = self.base_email.get()
         base_alias = self.base_alias.get()
+        now = datetime.datetime.utcnow()
+        timestamp = now.strftime("%y-%m-%d-%H.%M.%S")
         # check for base alias not null
         if self.is_base_alias_not_null(base_alias):
             # Check for valid base email
@@ -178,6 +212,10 @@ class RandomEmailAliasGenerator:
                 self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
                 self.lucky_click_confirmation()
+                index='1.0'
+                for alias in random_aliases:
+                    self.alias_history.append(alias + " | Timestamp: " + timestamp + " (FL)")
+                    index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
             else:
                 # Display error message
                 self.feeling_lucky_output.delete('1.0', tk.END)

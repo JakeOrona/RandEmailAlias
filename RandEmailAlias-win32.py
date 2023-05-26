@@ -1,4 +1,4 @@
-# v2.4.4-beta-playground
+# v2.4.4-beta-win32
 # Feature: Alias History. Create button to display generated emails that have been auto-copied to clipboard
 
 import random
@@ -157,7 +157,7 @@ class RandomEmailAliasGenerator:
                 self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
         else:
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, "ENTER A VALID BASE EMAIL")
+            self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
             self.error_confirmation()
 
     def generate_base_alias_email_alias(self, ts_toggle, copy_to_clipboard=True):
@@ -187,11 +187,11 @@ class RandomEmailAliasGenerator:
                     self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
             else:
                 self.email_alias.delete(0, tk.END)
-                self.email_alias.insert(0, "ENTER A VALID BASE EMAIL")
+                self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
                 self.error_confirmation()
         else:
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, "ENTER A VALID BASE ALIAS")
+            self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
     def feeling_lucky(self):

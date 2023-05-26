@@ -11,6 +11,7 @@ MacOS users will need to wait until solution is found to run in system tool bar.
 # v2.4.4-beta New Features:
 Alias History: Generated emails are saved with a timestamp. Click 'View Alias History' to view alias history.
 Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
+If email was generated via 'feeling lucky' button alias history will have "(FL)" flag
 
 # v2.4.3 Misc Updates:
 Button click confirmation updated. Buttons now flash blue when clicked and valid output is generated.
