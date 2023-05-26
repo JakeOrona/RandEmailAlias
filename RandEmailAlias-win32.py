@@ -13,6 +13,7 @@ import re
 import pystray
 from urllib.request import urlopen
 from PIL import ImageTk, Image
+from tkinter import filedialog, messagebox
 # from tkinter import ttk
 
 class RandomEmailAliasGenerator:
@@ -85,7 +86,8 @@ class RandomEmailAliasGenerator:
         # Generate email alias button
         self.generate_alias_button = tk.Button(buttons_frame, text="Base Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
         self.generate_alias_button.grid(row=3, column=0, columnspan=1, padx=5, pady=5)
-        # Test  email button info
+        
+        # Base alias email button info
         tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+TEST.abc123@gmail.com").grid(row=2, column=0, columnspan=1, padx=5, pady=5)
 
         # Copy to Clipboard button
@@ -102,29 +104,79 @@ class RandomEmailAliasGenerator:
         self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
         self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=5)
 
-        # Alias History button
-        self.alias_history_button = tk.Button(history_output_frame, text="View Alias History", command=self.show_alias_history)
-        self.alias_history_button.grid(row=0, column=0, padx=5, pady=5)
-
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="")
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
+        # Alias History button
+        self.alias_history_button = tk.Button(history_output_frame, text="View Alias History", command=self.show_alias_history)
+        self.alias_history_button.grid(row=0, column=0, padx=5, pady=5)
+
     def show_alias_history(self):
+
         # Create a new window
         history_window = tk.Toplevel(self.master)
         history_window.title("Alias History")
 
+        # Create new frame for alias history save/load buttons
+        history_function_frame = tk.Frame(history_window, relief="groove")
+        history_function_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
+
+        # Save alias history button
+        self.save_history_button = tk.Button(history_function_frame, text="Save Alias History", command=self.save_alias_history)
+        self.save_history_button.grid(row=0, column=0, padx=5, pady=5)
+
+        # Load alias history button
+        self.load_history_button = tk.Button(history_function_frame, text="Load Alias History", command=self.load_alias_history)
+        self.load_history_button.grid(row=0, column=2, padx=5, pady=5)
+
         # Create a Text widget to display the history
-        history_text = tk.Text(history_window, height=25, width=80)
-        history_text.pack()
+        self.history_text = tk.Text(history_window, height=25, width=80)
+        self.history_text.grid(row=1, column=0, columnspan=1, padx=2, pady=3)
 
         # Insert the history into the Text widget
         for alias in self.alias_history:
-            history_text.insert(tk.END, alias + "\n")
+            self.history_text.insert(tk.END, alias + "\n")
 
         # Make the window visible
         history_window.mainloop()
+
+    def update_history_display(self):
+        if hasattr(self, 'history_text'):  # Check if history_text attribute exists
+            self.history_text.delete("1.0", tk.END)
+            for alias in self.alias_history:
+                self.history_text.insert(tk.END, alias + "\n")
+
+
+    def save_alias_history(self):
+        # Prompt the user for a custom file name
+        file_name = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        
+        if file_name:
+            with open(file_name, "w") as file:
+                # Write the alias history to the file
+                for alias in self.alias_history:
+                    file.write(alias + "\n")
+
+            # Display a confirmation message
+            self.confirmation_label.config(text="Alias history saved", fg="White", bg="Green")
+            # Reset label text after 2 seconds
+            t = threading.Timer(2.0, self.reset_confirmation)
+            t.start()
+
+    def load_alias_history(self):
+        if messagebox.askyesno("Warning", "Loading a file will overwrite the current alias history. Do you want to proceed?"):
+            file_name = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+            if file_name:
+                self.alias_history.clear()  # Clear alias history array
+                with open(file_name, 'r') as file:
+                    content = file.read()
+                    lines = content.splitlines()
+                    if self.history_text.get("1.0", tk.END) != "\n": # check for blank history
+                        self.history_text.delete("1.0", tk.END)
+                    for line in lines:
+                        self.alias_history.append(line)
+                        self.history_text.insert(tk.END, line + "\n")
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
@@ -153,8 +205,15 @@ class RandomEmailAliasGenerator:
 
             if copy_to_clipboard:
                 self.copy_to_clipboard()
-                self.generate_click_confirmation()
+                self.generate_click_confirmation(self.generate_button)
                 self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
+
+                 # Check if the history window exists before updating the display
+                if hasattr(self, 'history_text'):
+                    if self.history_text.winfo_exists():  # Check if history_text widget exists and is open
+                        self.update_history_display()
+                    else:
+                        delattr(self, 'history_text')  # Remove the attribute if the history window is closed
         else:
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
@@ -183,8 +242,10 @@ class RandomEmailAliasGenerator:
 
                 if copy_to_clipboard:
                     self.copy_to_clipboard()
-                    self.alias_click_confirmation()
+                    self.generate_click_confirmation(self.generate_alias_button)
                     self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
+                    # Update History Display
+                    self.update_history_display()
             else:
                 self.email_alias.delete(0, tk.END)
                 self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
@@ -209,11 +270,13 @@ class RandomEmailAliasGenerator:
                 self.feeling_lucky_output.delete('1.0', tk.END)
                 self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
-                self.lucky_click_confirmation()
+                self.generate_click_confirmation(self.lucky_button)
                 index='1.0'
                 for alias in random_aliases:
                     self.alias_history.append(alias + " | Timestamp: " + timestamp + " (FL)")
                     index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
+                # Update History Display after appending lucky output
+                self.update_history_display()
             else:
                 # Display error message
                 self.feeling_lucky_output.delete('1.0', tk.END)
@@ -234,12 +297,11 @@ class RandomEmailAliasGenerator:
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
 
-    def generate_click_confirmation(self):
+    def generate_click_confirmation(self, button):
         """When button clicked display confirmation"""
-        self.generate_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
-        # Reset label text after 1 second
-        t = threading.Timer(0.1, self.reset_generate_button)
-        t.start()
+        button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
+        # Reset label text after 0.1 second
+        self.master.after(100, self.reset_button, button)
         
     def alias_click_confirmation(self):
         """When button clicked display confirmation"""
@@ -261,9 +323,9 @@ class RandomEmailAliasGenerator:
         t = threading.Timer(1.0, self.reset_confirmation)
         t.start()
 
-    def reset_generate_button(self):
+    def reset_button(self, button): # NEED TO RESET BACK TO CORRECT NAME
         """Reset generate email button text"""
-        self.generate_button.config(text="Random Email", fg= "Black", bg= "White")
+        button.config(text="Random Email", fg= "Black", bg= "White")
 
     def reset_alias_button(self):
         """Reset generate alias button text"""
