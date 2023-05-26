@@ -8,17 +8,19 @@ System Toolbar only working on windows.
 
 MacOS users will need to wait until solution is found to run in system tool bar. May require rewriting in swift...
 
-# v2.4.4-beta New Features:
+## v2.4.4-beta New Features:
 Alias History: Generated emails are saved with a timestamp. Click 'View Alias History' to view alias history.
-Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
-If email was generated via 'feeling lucky' button alias history will have "(FL)" flag
 
-# v2.4.3 Misc Updates:
-Button click confirmation updated. Buttons now flash blue when clicked and valid output is generated.
-Updated copy to clipboard confirmation due to auto-copy. Copy confirmation message is clearer.
-Copy to Clipboard function checks for valid email to avoid copying error message.
+- Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
 
-# Installation:
+- If email was generated via 'feeling lucky' button alias history will have "(FL)" flag
+
+### v2.4.3 Misc Updates:
+- Button click confirmation updated. Buttons now flash blue when clicked and valid output is generated.
+- Updated copy to clipboard confirmation due to auto-copy. Copy confirmation message is clearer.
+- Copy to Clipboard function checks for valid email to avoid copying error message.
+
+### Installation:
 Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application from unziped folder.
 
 Mac users may receive warning when opening app for first time. This app is not signed with a developer certificate. I built the app using py2app. You may need to right click on application -> open. A warning error will display. Click ok to close warning. Right click on app again -> open. Receive a warning label again, this time clicking open should proceed into app. This should clear the warning. You may need to repeat this if you move the application or if you download a new version. (Im not paying apple yet. When I get to swift, I get to swift).
