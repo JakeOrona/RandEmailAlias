@@ -1,5 +1,5 @@
 # v2.5.1-beta
-# Feature Update: Alias History. Load and save alias history as a .txt file
+# Feature Update: Load and save alias history as a .csv file
 
 import random
 import string
@@ -7,6 +7,7 @@ import tkinter as tk
 import threading
 import datetime
 import re
+import csv
 from tkinter import filedialog, messagebox
 
 class RandomEmailAliasGenerator:
@@ -147,34 +148,47 @@ class RandomEmailAliasGenerator:
 
     def save_alias_history(self):
         # Prompt the user for a custom file name
-        file_name = tk.filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        file_name = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
         
         if file_name:
-            with open(file_name, "w") as file:
-                # Write the alias history to the file
+            with open(file_name, "w", newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["Alias", "Timestamp"])  # Write the header
                 for alias in self.alias_history:
-                    file.write(alias + "\n")
+                    match = re.search(r"(.*) \| Timestamp: (.*?)( \*|$)", alias)
+                    if match:
+                        email, ts, fl_flag = match.group(1), match.group(2), match.group(3)
+                        fl_flag = "*" if fl_flag.strip() == "*" else ""  # Check if alias ends with "*"
+                        writer.writerow([email, ts, fl_flag])
+                    else:
+                        writer.writerow([alias, "", ""])  # Write empty values if pattern not matched
 
-            # Display a confirmation message
             self.confirmation_label.config(text="Alias History Saved", fg="White", bg="Green")
-            # Reset label text after 2 seconds
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
 
     def load_alias_history(self):
         if messagebox.askyesno("Warning", "Loading a file will overwrite the current alias history. Do you want to proceed?"):
-            file_name = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+            file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if file_name:
-                self.alias_history.clear()  # Clear alias history array
-                with open(file_name, 'r') as file:
-                    content = file.read()
-                    lines = content.splitlines()
-                    self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
-                    if self.history_text.get("1.0", tk.END) != "\n": # check for blank history
-                        self.history_text.delete("1.0", tk.END)
-                    for line in lines:
-                        self.alias_history.append(line)
-                        self.history_text.insert(tk.END, line + "\n")
+                self.alias_history.clear()
+                with open(file_name, 'r', newline='') as file:
+                    reader = csv.reader(file)
+                    next(reader)  # Skip the header row
+
+                    self.alias_history = []  # Clear the existing alias history
+                    for row in reader:
+                        alias = row[0]
+                        timestamp = row[1].replace("Timestamp: ", "")
+                        fl_flag = row[2] if len(row) > 2 else ""
+                        formatted_alias = f"{alias} | Timestamp: {timestamp}{fl_flag}"
+                        self.alias_history.append(formatted_alias)
+
+                self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
+                if self.history_text.get("1.0", tk.END) != "\n":
+                    self.history_text.delete("1.0", tk.END)
+                for alias in self.alias_history:
+                    self.history_text.insert(tk.END, alias + "\n")
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
@@ -275,7 +289,7 @@ class RandomEmailAliasGenerator:
                 self.generate_click_confirmation(self.lucky_button)
                 index='1.0'
                 for alias in random_aliases:
-                    self.alias_history.append(alias + " | Timestamp: " + timestamp + " (FL)")
+                    self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
                     index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
                 # Update History Display after appending lucky output
                 self.update_history_display()
