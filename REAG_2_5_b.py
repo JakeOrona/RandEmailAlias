@@ -34,21 +34,22 @@ class RandomEmailAliasGenerator:
         feeling_lucky_output_frame = tk.Frame(self.master,  relief="groove")
         feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
-        # Base email label and input field in base_email_frame
-        tk.Label(base_email_frame, text="Base Email:").grid(row=1, column=0, padx=5, pady=5)
+        # Base email input field in base_email_frame
         self.base_email = tk.Entry(base_email_frame, width=25)
-        self.base_email.grid(row=2, column=0, padx=10, pady=5)
+        self.base_email.grid(row=0, column=0, padx=10, pady=5)
+        self.base_email.insert(0, "Enter Base Email")
         self.base_email.focus()
+        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
-        # Base alias label and input field
-        tk.Label(base_email_frame, text="Base Alias: IE: 'TEST'").grid(row=3, column=0, padx=5, pady=5)
+        # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
-        self.base_alias.grid(row=4, column=0, padx=5, pady=5)
+        self.base_alias.grid(row=1, column=0, padx=5, pady=5)
+        self.base_alias.insert(0, "Enter Base Alias")
 
          # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
         checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
-        checkbutton.grid(row=6, column=0, padx=5, pady=2)
+        checkbutton.grid(row=2, column=0, padx=5, pady=2)
 
         # Generated email alias label and output field
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
@@ -74,7 +75,7 @@ class RandomEmailAliasGenerator:
         self.copy_button.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
 
         # Label to display confirmation message
-        self.confirmation_label = tk.Label(buttons_frame, text="waiting..")
+        self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
         # Generate 10 aliases button info
@@ -327,7 +328,7 @@ class RandomEmailAliasGenerator:
         
     def reset_confirmation(self):
         """Reset confirmation label text"""
-        self.confirmation_label.config(text="waiting..")
+        self.confirmation_label.config(text="waiting for input..")
 
 def main():
     root = tk.Tk()
