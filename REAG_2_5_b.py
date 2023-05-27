@@ -156,6 +156,9 @@ class RandomEmailAliasGenerator:
         if messagebox.askyesno("Warning", "You are about to clear Alias History. Do you want to proceed?"):
             self.alias_history.clear()
             self.update_history_display()
+            self.confirmation_label.config(text="Alias History Cleared", fg="White", bg="Green")
+            t = threading.Timer(2.0, self.reset_confirmation)
+            t.start()
 
     def save_alias_history(self):
         # Prompt the user for a custom file name
@@ -195,12 +198,15 @@ class RandomEmailAliasGenerator:
                         formatted_alias = f"{alias} | Timestamp: {timestamp}{fl_flag}"
                         self.alias_history.append(formatted_alias)
 
-                self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
                 if self.history_text.get("1.0", tk.END) != "\n":
                     self.history_text.delete("1.0", tk.END)
                 for alias in self.alias_history:
                     self.history_text.insert(tk.END, alias + "\n")
                 self.history_text.see(tk.END)  # Scroll to the end of the text
+                # update confrimation
+                self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
+                t = threading.Timer(2.0, self.reset_confirmation)
+                t.start()
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
