@@ -287,6 +287,10 @@ class RandomEmailAliasGenerator:
                 self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
                 self.generate_click_confirmation(self.lucky_button)
+                self.confirmation_label.config(text="10x Alias", fg="White", bg="Green")
+                t = threading.Timer(1.0, self.reset_confirmation)
+                t.start()
+                
                 index='1.0'
                 for alias in random_aliases:
                     self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
