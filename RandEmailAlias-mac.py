@@ -105,7 +105,7 @@ class RandomEmailAliasGenerator:
         
         # Feeling lucky output field
         self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
-        self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=5)
+        self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
 
         # Alias History button
         self.alias_history_button = tk.Button(base_email_frame, text="Show History", command=self.show_alias_history)
@@ -124,7 +124,7 @@ class RandomEmailAliasGenerator:
             self.alias_history_button.config(text="Hide History")
 
             # Create a Frame for the collapsible history section
-            self.history_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
+            self.history_frame = tk.Frame(self.master, relief="groove")
             self.history_frame.grid(row=0, column=1, rowspan=3, padx=2, pady=3, sticky="nsew")
 
             # Configure the row and column to fill vertical space
@@ -163,7 +163,7 @@ class RandomEmailAliasGenerator:
             self.history_frame.grid_forget()
             self.alias_history_button.config(text="Show History")
         else:
-            self.history_frame.grid(row=0, column=1, columnspan=2, padx=2, pady=3)
+            self.history_frame.grid(row=0, column=1, rowspan=3, padx=2, pady=3, sticky="nsew")
             self.alias_history_button.config(text="Hide History")
 
 
