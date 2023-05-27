@@ -1,5 +1,5 @@
-# v2.5.1-beta
-# Feature Update: Load and save alias history as a .csv file
+# v2.5.2-beta
+# Feature Update: Removed feeling lucking frame. Feeling lucky outputs to history frame with * appened to timestamp.
 
 import random
 import string
@@ -87,8 +87,8 @@ class RandomEmailAliasGenerator:
         self.lucky_button.grid(row=1, column=0, columnspan=1, padx=5, pady=5)
         
         # Feeling lucky output field
-        self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
-        self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
+        # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
+        # self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
 
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
@@ -283,8 +283,8 @@ class RandomEmailAliasGenerator:
             if self.is_valid_base_email(base_email):
                 username, domain = base_email.split('@')
                 random_aliases = [f"{username}+{base_alias}.{''.join(random.choices(string.ascii_letters + string.digits, k=6))}@{domain}" for i in range(10)]
-                self.feeling_lucky_output.delete('1.0', tk.END)
-                self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
+                # self.feeling_lucky_output.delete('1.0', tk.END)
+                # self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
                 self.generate_click_confirmation(self.lucky_button)
                 self.confirmation_label.config(text="10x Alias", fg="White", bg="Green")
@@ -294,18 +294,18 @@ class RandomEmailAliasGenerator:
                 index='1.0'
                 for alias in random_aliases:
                     self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
-                    index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
+                    # index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
                 # Update History Display after appending lucky output
                 self.update_history_display()
             else:
                 # Display error message
-                self.feeling_lucky_output.delete('1.0', tk.END)
-                self.feeling_lucky_output.insert('1.0', f"ENTER A VALID BASE EMAIL")
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
                 self.error_confirmation()
         else:
             # Display error message
-            self.feeling_lucky_output.delete('1.0', tk.END)
-            self.feeling_lucky_output.insert('1.0', f"ENTER A VALID BASE ALIAS")
+            self.email_alias.delete(0, tk.END)
+            self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
     def copy_to_clipboard(self):
