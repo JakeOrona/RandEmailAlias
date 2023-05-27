@@ -1,5 +1,5 @@
-# v2.4.3-beta-macOS
-# Feature: Alias History. Create button to display generated emails that have been auto-copied to clipboard
+# v2.5-beta
+# Feature Update: Alias History. Load and save alias history as a .txt file
 
 import random
 import string
@@ -8,11 +8,6 @@ import threading
 import datetime
 import re
 from tkinter import filedialog, messagebox
-# import io
-#from urllib.request import urlopen
-#from PIL import ImageTk, Image
-# import ssl
-# ssl._create_default_https_context = ssl._create_unverified_context
 
 class RandomEmailAliasGenerator:
     def __init__(self, master):
@@ -24,31 +19,20 @@ class RandomEmailAliasGenerator:
         self.alias_history = []
 
         # Set window size for responsive window
-        self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
+        self.master.rowconfigure((0,1,2), weight=1, minsize=30)
         self.master.columnconfigure((0), weight=1, minsize=30)
-
-        """# Load the image
-        # url = "https://i.imgur.com/yzC0PES.jpeg"
-        # image_data = urlopen(url).read()
-        image = Image.open('resources/REAG-BG.jpg')
-        background_image = ImageTk.PhotoImage(image)
-
-        # Create a label for the image
-        background_label = tk.Label(self.master, image=background_image)
-        background_label.place(x=0, y=0, relwidth=1, relheight=1)
-        background_label.image = background_image"""
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        base_email_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
+        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for all buttons
         buttons_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        buttons_frame.grid(row=2, column=0, columnspan=1, padx=5, pady=3)
+        buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
 
         # Create new frame for feeling lucky output
         feeling_lucky_output_frame = tk.Frame(self.master, borderwidth=2, relief="groove")
-        feeling_lucky_output_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
+        feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email label and input field in base_email_frame
         tk.Label(base_email_frame, text="Base Email:").grid(row=1, column=0, padx=5, pady=5)
@@ -63,30 +47,27 @@ class RandomEmailAliasGenerator:
 
          # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override\nYY-MM-DD-HH.MM.SS\n('Base Alias Email' button only)", variable=ts_toggle, onvalue=True, offvalue=False)
-        checkbutton.grid(row=6, column=0, padx=5, pady=5)
+        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
+        checkbutton.grid(row=6, column=0, padx=5, pady=2)
 
         # Generated email alias label and output field
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
         self.email_alias = tk.Entry(buttons_frame, width=25)
-        self.email_alias.grid(row=5, column=0, padx=7, pady=5)
+        self.email_alias.grid(row=5, column=0, padx=5, pady=5)
 
         # Random email button info
-        tk.Label(buttons_frame, text="Generate random alias\nie: jake+abc123@gmail.com").grid(row=0, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=0, column=0, columnspan=1, padx=5, pady=1)
 
         # Generate random email button
-        self.generate_button = tk.Button(buttons_frame, text="Random Email", command=self.generate_random_email_alias)
+        self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=self.generate_random_email_alias)
         self.generate_button.grid(row=1, column=0, columnspan=1, padx=5, pady=5)
 
-        # Random email button info
-        tk.Label(buttons_frame, text="Generate random alias\nie: jake+abc123@gmail.com").grid(row=0, column=0, columnspan=1, padx=5, pady=5)
-
         # Generate email alias button
-        self.generate_alias_button = tk.Button(buttons_frame, text="Base Alias Email", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
+        self.generate_alias_button = tk.Button(buttons_frame, text="Generate Using Base Alias", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
         self.generate_alias_button.grid(row=3, column=0, columnspan=1, padx=5, pady=5)
         
         # Base alias email button info
-        tk.Label(buttons_frame, text="Generate using base alias\n ie: jake+TEST.abc123@gmail.com").grid(row=2, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=2, column=0, columnspan=1, padx=5, pady=5)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
@@ -107,9 +88,9 @@ class RandomEmailAliasGenerator:
         self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
         self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
 
-        # Alias History button
-        self.alias_history_button = tk.Button(self.master, text="Show History", command=self.show_alias_history)
-        self.alias_history_button.grid(row=0, column=0, padx=5, pady=10)
+        # Show Alias History button
+        self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
+        self.alias_history_button.grid(row=1, column=1, padx=5, pady=10)
 
     def show_alias_history(self):
         """# Create a new window
@@ -121,11 +102,11 @@ class RandomEmailAliasGenerator:
             self.toggle_history()
         else:
             # Update History Button to toggle the visibility of the history section
-            self.alias_history_button.config(text="Hide History")
+            self.alias_history_button.config(text="<<\n\n\n<<\n\n\n<<")
 
             # Create a Frame for the collapsible history section
             self.history_frame = tk.Frame(self.master, relief="groove")
-            self.history_frame.grid(row=0, column=1, rowspan=4, padx=2, pady=3, sticky="nsew")
+            self.history_frame.grid(row=0, column=2, rowspan=4, padx=2, pady=3, sticky="nsew")
 
             # Configure the row and column to fill vertical space
             self.history_frame.grid_rowconfigure(1, weight=1)
@@ -161,10 +142,10 @@ class RandomEmailAliasGenerator:
         # Toggle the visibility of the history section
         if self.history_frame.winfo_ismapped():
             self.history_frame.grid_forget()
-            self.alias_history_button.config(text="Show History")
+            self.alias_history_button.config(text=">>\n\n\n>>\n\n\n>>")
         else:
-            self.history_frame.grid(row=0, column=1, rowspan=4, padx=2, pady=3, sticky="nsew")
-            self.alias_history_button.config(text="Hide History")
+            self.history_frame.grid(row=0, column=2, rowspan=3, padx=2, pady=3, sticky="nsew")
+            self.alias_history_button.config(text="<<\n\n\n<<\n\n\n<<")
 
 
     def save_alias_history(self):
@@ -178,7 +159,7 @@ class RandomEmailAliasGenerator:
                     file.write(alias + "\n")
 
             # Display a confirmation message
-            self.confirmation_label.config(text="Alias history saved", fg="White", bg="Green")
+            self.confirmation_label.config(text="Alias History Saved", fg="White", bg="Green")
             # Reset label text after 2 seconds
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
@@ -191,6 +172,7 @@ class RandomEmailAliasGenerator:
                 with open(file_name, 'r') as file:
                     content = file.read()
                     lines = content.splitlines()
+                    self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
                     if self.history_text.get("1.0", tk.END) != "\n": # check for blank history
                         self.history_text.delete("1.0", tk.END)
                     for line in lines:
@@ -226,6 +208,7 @@ class RandomEmailAliasGenerator:
             if copy_to_clipboard:
                 self.copy_to_clipboard()
                 self.generate_click_confirmation(self.generate_button)
+                # Add alias to history
                 self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
 
                  # Check if the history window exists before updating the display
@@ -321,49 +304,34 @@ class RandomEmailAliasGenerator:
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
 
-    def generate_click_confirmation(self):
+    def generate_click_confirmation(self, button):
         """When button clicked display confirmation"""
-        self.generate_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
-        # Reset label text after 1 second
-        t = threading.Timer(0.1, self.reset_generate_button)
-        t.start()
-        
-    def alias_click_confirmation(self):
-        """When button clicked display confirmation"""
-        self.generate_alias_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
-        # Reset label text after 1 second
-        t = threading.Timer(0.1, self.reset_alias_button)
-        t.start()
-
-    def lucky_click_confirmation(self):
-        """When button clicked display confirmation"""
-        self.lucky_button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
-        # Reset label text after 1 second
-        t = threading.Timer(0.1, self.reset_lucky_button)
-        t.start()
+        button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
+        # Reset label text after 0.1 second
+        self.master.after(100, self.reset_button, button)
 
     def error_confirmation(self):
         """When invalid base email or null base alias display error"""
-        self.confirmation_label.config(text="(ノಠ益ಠ)ノ彡┻━┻", fg="Red")
+        self.confirmation_label.config(text="(ノಠ益ಠ)ノ彡┻━┻", fg="White", bg="Red")
         t = threading.Timer(1.0, self.reset_confirmation)
         t.start()
 
-    def reset_generate_button(self):
+    def reset_button(self, button):
         """Reset generate email button text"""
-        self.generate_button.config(text="Random Email", fg= "Black", bg= "White")
-
-    def reset_alias_button(self):
-        """Reset generate alias button text"""
-        self.generate_alias_button.config(text="Base Alias Email", fg= "Black", bg= "White")
-
-    def reset_lucky_button(self):
-        """Reset feeling lucky button text"""
-        self.lucky_button.config(text="Feeling Lucky", fg= "Black", bg= "White")
-
+        if button == self.generate_button:
+            button.config(text="Generate Random Alias", fg= "Black", bg= "White")
+        elif button == self.generate_alias_button:
+            button.config(text="Generate Using Base Alias", fg= "Black", bg= "White")
+        elif button == self.lucky_button:
+            button.config(text="Feeling Lucky", fg= "Black", bg= "White")
+        elif button == self.copy_button:
+            button.config(text="Copy to Clipboard", fg= "Black", bg= "White")
+        else:
+            return
+        
     def reset_confirmation(self):
         """Reset confirmation label text"""
-        self.confirmation_label.config(text="", fg= "Black", bg="White")
-
+        self.confirmation_label.config(text="waiting..")
 
 def main():
     root = tk.Tk()
