@@ -1,22 +1,15 @@
-# RandEmailAlias_v2.4.4-beta
+# RandEmailAlias_v2.5.1-beta
 
-Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp (YY-MM-DD-HH.MM.SS).
+Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp (YY-MM-DD-HH.MM.SS). Load and save alias history as a .csv file.
 
-Windows app runs via system tool bar. User must right click and select open to launch instance of program. 
-User can close window and toolbar icon instance runs in background. Right click and quit to close toolbar
-System Toolbar only working on windows.
+Windows app no longer runs via system tool bar. This function was dropped for code refactor, it will return in a future release.
 
-MacOS users will need to wait until solution is found to run in system tool bar. May require rewriting in swift...
-
-## v2.4.4-beta New Features:
-Alias History: Generated emails are saved with a timestamp. Click 'View Alias History' to view alias history.
+## v2.5.1-beta New Features:
+Alias History: Generated emails are saved to history array with a timestamp. Load and Save history to a .csv file.
+- Click '>>' button to view alias history.
+- Aliases are added to alias history if email generation was successful
 - Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
-- If email was generated via 'feeling lucky' button alias history will have "(FL)" flag
-
-### v2.4.3 Misc Updates:
-- Button click confirmation updated. Buttons now flash blue when clicked and valid output is generated.
-- Updated copy to clipboard confirmation due to auto-copy. Copy confirmation message is clearer.
-- Copy to Clipboard function checks for valid email to avoid copying error message.
+- If email was generated via 'feeling lucky' button timestap will be appended with "*"
 
 ### Installation:
 Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application from unziped folder.
@@ -33,6 +26,6 @@ See required libraries in source code.
 
 Install the libraries using pip in terminal: pip install <library_name>
 
-To run, download the source .py and use terminal to launch the python program with the following command (you may need to move the file to correct directory/change directory/adjust your PATH to include Python 3 and the file location. (Google is your friend or ask me for help):
+To run, download the source .py and use terminal to launch the python program:
 
 python <filename.py> OR python3 <filename.py>
