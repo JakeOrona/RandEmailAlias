@@ -111,21 +111,25 @@ class RandomEmailAliasGenerator:
             self.history_frame.grid_rowconfigure(1, weight=1)
             self.history_frame.grid_columnconfigure(0, weight=1)
 
-             # Create new frame for alias history save/load buttons in history frame
+             # Create new frame for alias history clear/save/load buttons in history frame
             history_function_frame = tk.Frame(self.history_frame, relief="groove")
-            history_function_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
+            history_function_frame.grid(row=0, column=0, columnspan=2, padx=2, pady=3)
 
             # Create a Text widget to display the history
             self.history_text = tk.Text(self.history_frame, height=15, width=75)
             self.history_text.grid(row=1, column=0, columnspan=1, padx=2, pady=3, sticky="nsew")
 
             # Save alias history button
-            self.save_history_button = tk.Button(history_function_frame, text="Save Alias History", command=self.save_alias_history)
+            self.save_history_button = tk.Button(history_function_frame, text="Save History", command=self.save_alias_history)
             self.save_history_button.grid(row=0, column=0, padx=5, pady=5)
 
             # Load alias history button
-            self.load_history_button = tk.Button(history_function_frame, text="Load Alias History", command=self.load_alias_history)
+            self.load_history_button = tk.Button(history_function_frame, text="Load History", command=self.load_alias_history)
             self.load_history_button.grid(row=0, column=1, padx=5, pady=5)
+
+            # Clear alias history button
+            self.clear_history_button = tk.Button(history_function_frame, text="Clear History", command=self.clear_alias_history)
+            self.clear_history_button.grid(row=0, column=2, padx=5, pady=5)
 
             # Insert the history into the Text widget
             for alias in self.alias_history:
@@ -146,6 +150,12 @@ class RandomEmailAliasGenerator:
         else:
             self.history_frame.grid(row=0, column=2, rowspan=3, padx=2, pady=3, sticky="nsew")
             self.alias_history_button.config(text="<<\n\n\n<<\n\n\n<<")
+
+    def clear_alias_history(self):
+        #prompt user to confirm clear alias history
+        if messagebox.askyesno("Warning", "You are about to clear Alias History. Do you want to proceed?"):
+            self.alias_history.clear()
+            self.update_history_display()
 
     def save_alias_history(self):
         # Prompt the user for a custom file name
