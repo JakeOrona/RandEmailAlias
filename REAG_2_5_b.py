@@ -62,29 +62,29 @@ class RandomEmailAliasGenerator:
 
         # Generate random email button
         self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=self.generate_random_email_alias)
-        self.generate_button.grid(row=0, column=0, columnspan=1, padx=5, pady=5)
+        self.generate_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
         # Generate email base alias button
         self.generate_alias_button = tk.Button(buttons_frame, text="Generate Using Base Alias", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
-        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=5, pady=5)
+        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=5, pady=3)
         
         # Base alias email button info
-        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=5, pady=1)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
-        self.copy_button.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
+        self.copy_button.grid(row=6, column=0, columnspan=2, padx=5, pady=3)
 
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
         # Generate 10 aliases button info
-        tk.Label(feeling_lucky_output_frame, text="Generate 10 aliases using base alias").grid(row=0, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(feeling_lucky_output_frame, text="Generate 10 aliases using base alias").grid(row=0, column=0, columnspan=1, padx=5, pady=1)
 
         # Generate 10 aliases button
         self.lucky_button = tk.Button(feeling_lucky_output_frame, text="Feeling Lucky", command=self.feeling_lucky)
-        self.lucky_button.grid(row=1, column=0, columnspan=1, padx=5, pady=5)
+        self.lucky_button.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
         
         # Feeling lucky output field
         # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
