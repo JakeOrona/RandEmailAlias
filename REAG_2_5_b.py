@@ -136,6 +136,7 @@ class RandomEmailAliasGenerator:
             self.history_text.delete("1.0", tk.END)
             for alias in self.alias_history:
                 self.history_text.insert(tk.END, alias + "\n")
+            self.history_text.see(tk.END)  # Scroll to the end of the text
 
     def toggle_history(self):
         # Toggle the visibility of the history section
@@ -169,9 +170,9 @@ class RandomEmailAliasGenerator:
 
     def load_alias_history(self):
         if messagebox.askyesno("Warning", "Loading a file will overwrite the current alias history. Do you want to proceed?"):
+            self.alias_history.clear()
             file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
             if file_name:
-                self.alias_history.clear()
                 with open(file_name, 'r', newline='') as file:
                     reader = csv.reader(file)
                     next(reader)  # Skip the header row
@@ -189,6 +190,7 @@ class RandomEmailAliasGenerator:
                     self.history_text.delete("1.0", tk.END)
                 for alias in self.alias_history:
                     self.history_text.insert(tk.END, alias + "\n")
+                self.history_text.see(tk.END)  # Scroll to the end of the text
 
     def is_valid_base_email(self, email):
         # Regular expression for email validation
