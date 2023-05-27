@@ -8,17 +8,12 @@ build_exe_options = {
     "random",
     "string",
     "tkinter",
-    "pyperclip",
+    "csv",
     "threading",
     "datetime",
-    "io",
     "re",
-    "pystray",
-    "urllib.request",
-    "PIL.ImageTk",
-    "PIL.Image"
     ],
-    "include_files": ["resources","resources\\REAG-BG.jpg"]
+    "include_files": []
 }
 
 # GUI applications require a different base on Windows (the default is for a
@@ -28,9 +23,9 @@ if sys.platform == "win32":
     base = "Win32GUI"
 
 setup(
-    name="RandEmailAlias",
-    version="0.2.4.2",
+    name="RandEmailAliasGenerator",
+    version="0.2.5.1",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
-    executables=[Executable("RandEmailAlias-win32.py", base=base)]
+    executables=[Executable("REAG_2_5_b.py", base=base)]
 )
