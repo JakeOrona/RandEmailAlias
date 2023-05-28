@@ -8,6 +8,7 @@ import threading
 import datetime
 import re
 import csv
+from faker import Faker
 from tkinter import filedialog, messagebox
 
 class RandomEmailAliasGenerator:
@@ -238,9 +239,11 @@ class RandomEmailAliasGenerator:
         # check for valid base email
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
-            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+            fake_name = Faker()
+            random_full_name = fake_name.name()
+            random_name = "".join(random_full_name.split())
             self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
+            self.email_alias.insert(0, f"{username}+{random_name}@{domain}")
 
             if copy_to_clipboard:
                 self.copy_to_clipboard()
@@ -248,7 +251,7 @@ class RandomEmailAliasGenerator:
                 # Add alias to history
                 self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
 
-                 # Check if the history window exists before updating the display
+                # Check if the history window exists before updating the display
                 if hasattr(self, 'history_text'):
                     if self.history_text.winfo_exists():  # Check if history_text widget exists and is open
                         self.update_history_display()
@@ -258,6 +261,7 @@ class RandomEmailAliasGenerator:
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
             self.error_confirmation()
+
 
     def generate_base_alias_email_alias(self, ts_toggle, copy_to_clipboard=True):
         """Generates a random email alias based on a base email and base alias. 6 chars"""
@@ -276,9 +280,11 @@ class RandomEmailAliasGenerator:
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
                 else:
-                    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+                    fake_name = Faker()
+                    random_full_name = fake_name.name()
+                    random_name = "".join(random_full_name.split())
                     self.email_alias.delete(0, tk.END)
-                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
+                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_name}@{domain}")
 
                 if copy_to_clipboard:
                     self.copy_to_clipboard()
@@ -308,7 +314,10 @@ class RandomEmailAliasGenerator:
             # Check for valid base email
             if self.is_valid_base_email(base_email):
                 username, domain = base_email.split('@')
-                random_aliases = [f"{username}+{base_alias}.{''.join(random.choices(string.ascii_letters + string.digits, k=6))}@{domain}" for i in range(10)]
+                fake_name = Faker()
+                #random_full_name = fake_name.name()
+                #random_name = "".join(random_full_name.split())
+                random_aliases = [f"{username}+{base_alias}.{''.join(fake_name.name().split())}@{domain}" for i in range(10)]
                 # self.feeling_lucky_output.delete('1.0', tk.END)
                 # self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
                 # Click confirmation prompt
@@ -347,10 +356,11 @@ class RandomEmailAliasGenerator:
             self.settings_options_frame.grid_rowconfigure(1, weight=1)
             self.settings_options_frame.grid_columnconfigure(0, weight=1)
 
-            # Toggle for ???? setting
-            new_toggle = tk.BooleanVar()
-            new_checkbutton = tk.Checkbutton(self.settings_options_frame, text=f"Setting1", variable=new_toggle, onvalue=True, offvalue=False)
-            new_checkbutton.grid(row=2, column=0, padx=5, pady=2)
+            # Toggle for US name override setting
+            name_toggle = tk.BooleanVar()
+            name_setting_checkbutton = tk.Checkbutton(self.settings_options_frame, text=f"Name Override", variable=name_toggle, onvalue=True, offvalue=False, command=self.name_override(name_toggle))
+            name_setting_checkbutton.grid(row=2, column=0, padx=5, pady=2)
+
 
     def toggle_settings(self):
         # Toggle the visibility of the settings section
@@ -360,8 +370,10 @@ class RandomEmailAliasGenerator:
         else:
             self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
             self.settings_button.config(text="Hide Settings")
-    
-    
+
+    def name_override(self, toggle):
+        if toggle: self.override_name = toggle
+        else: self.override_name = False
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
