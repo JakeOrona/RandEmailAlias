@@ -1,5 +1,5 @@
 # v2.5.3-beta
-# Feature Update: Settings Frame
+# Feature Update: Settings Frame, alias generation now uses Faker to generate alias with full name.
 
 import random
 import string
@@ -37,8 +37,8 @@ class RandomEmailAliasGenerator:
         feeling_lucky_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
         # Create new frame for settings button
-        settings_frame = tk.Frame(self.master,  relief="groove")
-        settings_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
+        # settings_frame = tk.Frame(self.master,  relief="groove")
+        # settings_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
@@ -100,8 +100,8 @@ class RandomEmailAliasGenerator:
         self.alias_history_button.grid(row=1, column=1, padx=5, pady=10)
 
         # Settings button
-        self.settings_button = tk.Button(settings_frame, text="View Settings", command=self.open_settings)
-        self.settings_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
+        # self.settings_button = tk.Button(settings_frame, text="View Settings", command=self.open_settings)
+        # self.settings_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
     def show_alias_history(self):
 
