@@ -1,5 +1,5 @@
-# v2.5.2-beta
-# Feature Update: Removed feeling lucking frame. Feeling lucky outputs to history frame with * appened to timestamp.
+# v2.5.3-beta
+# Feature Update: Settings Frame
 
 import random
 import string
@@ -31,11 +31,15 @@ class RandomEmailAliasGenerator:
         buttons_frame = tk.Frame(self.master, relief="groove")
         buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
 
-        # Create new frame for feeling lucky output
-        feeling_lucky_output_frame = tk.Frame(self.master,  relief="groove")
-        feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
+        # Create new frame for feeling lucky
+        feeling_lucky_frame = tk.Frame(self.master,  relief="groove")
+        feeling_lucky_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
-        # Base email input field in base_email_frame
+        # Create new frame for settings button
+        settings_frame = tk.Frame(self.master,  relief="groove")
+        settings_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
+
+        # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
         self.base_email.grid(row=0, column=0, padx=10, pady=5)
         self.base_email.insert(0, "Enter Base Email")
@@ -47,7 +51,7 @@ class RandomEmailAliasGenerator:
         self.base_alias.grid(row=1, column=0, padx=5, pady=5)
         self.base_alias.insert(0, "Enter Base Alias")
 
-         # Toggle for timestamp alias
+        # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
         checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
         checkbutton.grid(row=2, column=0, padx=5, pady=2)
@@ -80,11 +84,11 @@ class RandomEmailAliasGenerator:
         self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
 
         # Generate 10 aliases button info
-        tk.Label(feeling_lucky_output_frame, text="Generate 10 aliases using base alias").grid(row=0, column=0, columnspan=1, padx=5, pady=1)
+        tk.Label(feeling_lucky_frame, text="Generate 10 aliases using base alias").grid(row=1, column=0, columnspan=1, padx=5, pady=1)
 
         # Generate 10 aliases button
-        self.lucky_button = tk.Button(feeling_lucky_output_frame, text="Feeling Lucky", command=self.feeling_lucky)
-        self.lucky_button.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
+        self.lucky_button = tk.Button(feeling_lucky_frame, text="Feeling Lucky", command=self.feeling_lucky)
+        self.lucky_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
         
         # Feeling lucky output field
         # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
@@ -93,6 +97,10 @@ class RandomEmailAliasGenerator:
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
         self.alias_history_button.grid(row=1, column=1, padx=5, pady=10)
+
+        # Settings button
+        self.settings_button = tk.Button(settings_frame, text="View Settings", command=self.open_settings)
+        self.settings_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
 
     def show_alias_history(self):
 
@@ -325,6 +333,35 @@ class RandomEmailAliasGenerator:
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
+
+    def open_settings(self):
+        # Check if history frame already exists
+        if hasattr(self, 'settings_options_frame'):
+            self.toggle_settings()
+        else:
+            # Create a Frame for the collapsible settings section
+            self.settings_options_frame = tk.Frame(self.master, relief="groove")
+            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
+
+            # Configure the row and column to fill vertical space
+            self.settings_options_frame.grid_rowconfigure(1, weight=1)
+            self.settings_options_frame.grid_columnconfigure(0, weight=1)
+
+            # Toggle for ???? setting
+            new_toggle = tk.BooleanVar()
+            new_checkbutton = tk.Checkbutton(self.settings_options_frame, text=f"Setting1", variable=new_toggle, onvalue=True, offvalue=False)
+            new_checkbutton.grid(row=2, column=0, padx=5, pady=2)
+
+    def toggle_settings(self):
+        # Toggle the visibility of the settings section
+        if self.settings_options_frame.winfo_ismapped():
+            self.settings_options_frame.grid_forget()
+            self.settings_button.config(text="View Settings")
+        else:
+            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
+            self.settings_button.config(text="Hide Settings")
+    
+    
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
