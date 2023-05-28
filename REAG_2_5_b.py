@@ -22,50 +22,53 @@ class RandomEmailAliasGenerator:
         self.alias_history = []
 
         # Set window size for responsive window
-        self.master.rowconfigure((0,1,2), weight=1, minsize=30)
-        self.master.columnconfigure((0), weight=1, minsize=30)
+        self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
+        self.master.columnconfigure((0,1,2), weight=1, minsize=30)
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, relief="groove")
-        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
+        base_email_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create new frame for all buttons
+        # Create new frame for customize options settings
+        options_frame = tk.Frame(self.master,  relief="groove")
+        options_frame.grid(row=1, column=0, columnspan=1, padx=2, pady=3)
+
+        # Create new frame for function buttons
         buttons_frame = tk.Frame(self.master, relief="groove")
-        buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
+        buttons_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
         # Create new frame for feeling lucky
         feeling_lucky_frame = tk.Frame(self.master,  relief="groove")
-        feeling_lucky_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
-
-        # Create new frame for settings button
-        # settings_frame = tk.Frame(self.master,  relief="groove")
-        # settings_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
+        feeling_lucky_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
 
         # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
-        self.base_email.grid(row=0, column=0, padx=10, pady=5)
+        self.base_email.grid(row=0, column=0, padx=2, pady=3)
         self.base_email.insert(0, "Enter Base Email")
         self.base_email.focus()
         self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
-        self.base_alias.grid(row=1, column=0, padx=5, pady=5)
+        self.base_alias.grid(row=1, column=0, padx=2, pady=3)
         self.base_alias.insert(0, "Enter Base Alias")
 
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
-        self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
+        self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
+
+        # Label for Options Frame
+        self.options_label = tk.Label(options_frame, text="Alias Options").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
 
         # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        ts_checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
-        ts_checkbutton.grid(row=2, column=0, padx=5, pady=2)
+        ts_checkbutton = tk.Checkbutton(options_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
+        ts_checkbutton.grid(row=1, column=0, padx=2, pady=2)
 
         # Toggle for company name alias
         cn_toggle = tk.BooleanVar()
-        cn_checkbutton = tk.Checkbutton(base_email_frame, text=f"Company Name Override", variable=cn_toggle, onvalue=True, offvalue=False)
-        cn_checkbutton.grid(row=3, column=0, padx=5, pady=2)
+        cn_checkbutton = tk.Checkbutton(options_frame, text=f"Company Name Override", variable=cn_toggle, onvalue=True, offvalue=False)
+        cn_checkbutton.grid(row=2, column=0, padx=2, pady=2)
 
         # Generated email alias label and output field
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
@@ -73,22 +76,22 @@ class RandomEmailAliasGenerator:
         self.email_alias.grid(row=5, column=0, padx=5, pady=5)
 
         # Random email button info
-        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=5, pady=1)
+        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=2, pady=1)
 
         # Generate random email button
         self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=lambda :self.generate_random_email_alias(cn_toggle))
-        self.generate_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
+        self.generate_button.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
         # Generate email base alias button
         self.generate_alias_button = tk.Button(buttons_frame, text="Generate Using Base Alias", command=lambda: self.generate_base_alias_email_alias(ts_toggle, cn_toggle))
-        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=5, pady=3)
+        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
         
         # Base alias email button info
-        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=5, pady=1)
+        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=2, pady=1)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
-        self.copy_button.grid(row=6, column=0, columnspan=2, padx=5, pady=3)
+        self.copy_button.grid(row=6, column=0, columnspan=2, padx=2, pady=3)
 
         # Generate 10 aliases button info
         tk.Label(feeling_lucky_frame, text="Generate 10 aliases using base alias").grid(row=1, column=0, columnspan=1, padx=5, pady=1)
@@ -103,11 +106,11 @@ class RandomEmailAliasGenerator:
 
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
-        self.alias_history_button.grid(row=1, column=1, padx=5, pady=10)
+        self.alias_history_button.grid(row=1, column=1, rowspan=3, padx=2, pady=10)
 
-        # Settings button
-        # self.settings_button = tk.Button(settings_frame, text="View Settings", command=self.open_settings)
-        # self.settings_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
+        # Info button
+        self.info_button = tk.Button(self.master, text="info", command=self.open_info)
+        self.info_button.grid(row=0, column=1, columnspan=1, padx=2, pady=3)
 
     def show_alias_history(self):
 
@@ -237,7 +240,7 @@ class RandomEmailAliasGenerator:
             return bool(re.match(pattern, alias))
         else: return False
     
-    def generate_random_email_alias(self, cn_toggle, copy_to_clipboard=True):
+    def generate_random_email_alias(self, ts_toggle, cn_toggle, copy_to_clipboard=True):
         """Generates a random email alias based on a base email. 6 chars"""
         base_email = self.base_email.get()
         now = datetime.datetime.utcnow()
@@ -245,6 +248,11 @@ class RandomEmailAliasGenerator:
         # check for valid base email
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
+
+            if ts_toggle.get():
+                    random_string = ''.join(timestamp)
+                    self.email_alias.delete(0, tk.END)
+                    self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
 
             # check for company name override
             if cn_toggle.get():
@@ -390,37 +398,58 @@ class RandomEmailAliasGenerator:
             self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
-    def open_settings(self):
-        # Check if history frame already exists
-        if hasattr(self, 'settings_options_frame'):
-            self.toggle_settings()
-        else:
-            # Create a Frame for the collapsible settings section
-            self.settings_options_frame = tk.Frame(self.master, relief="groove")
-            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
+    def open_info(self):
+        # Create a Frame for the collapsible settings section
+        self.info_window = tk.Toplevel(self.master)
+        self.info_window.title("-REAG Info-")
+        self.info_window.focus_force()
 
-            # Configure the row and column to fill vertical space
-            self.settings_options_frame.grid_rowconfigure(1, weight=1)
-            self.settings_options_frame.grid_columnconfigure(0, weight=1)
+        # Create and configure widgets in the info window
+        title_label = tk.Label(self.info_window, 
+                              text=f"Thanks for downloading REAG (Random Email Alias Generator).\n"
+                              " This application generates random email aliases based on a few generation rules.\n")
+        title_label.pack()
 
-            # Toggle for US name override setting
-            name_toggle = tk.BooleanVar()
-            name_setting_checkbutton = tk.Checkbutton(self.settings_options_frame, text=f"Name Override", variable=name_toggle, onvalue=True, offvalue=False, command=self.name_override(name_toggle))
-            name_setting_checkbutton.grid(row=2, column=0, padx=5, pady=2)
+        input_validation_label = tk.Label(self.info_window, text="Input Validation:\n"
+                              "There is no character limit validation to input, user beware.\n"
+                              "Base email input will check for a string in the following format: '<username>@<domain>.<TLD>'.\n"
+                              "Base alise input will check for a string in the following format: '[a-zA-Z0-9._%-]'.\n"
+                              "(Any uppercase or lowercase letter (a-z, A-Z), digit (0-9), period (.), underscore (_), percent symbol (%), or hyphen (-)\n")
+        input_validation_label.pack()
 
+        options_label = tk.Label(self.info_window, text="Customization Options:\n"
+                              "Timestamp Override will override alias generation with the current timestamp.\n"
+                              "Company Name Override will generate company names instead of first and last name aliases.\n")
+        options_label.pack()
+        # Add more widgets as needed
+        description_label = tk.Label(self.info_window, text="----------")
+        description_label.pack()
 
-    def toggle_settings(self):
+        description_text = tk.Label(self.info_window, text="Program Description:")
+        description_text.pack()
+
+        version_label = tk.Label(self.info_window, text="Version: 0.2.5.3-beta")
+        version_label.pack()
+
+        version_text = tk.Label(self.info_window, text=f"Maintained and Programed by Jake.\n"
+                                "Stay up to date at:")
+        version_text.pack()
+
+        url_text = tk.Text(self.info_window, height=1, width=52)
+        url_text.insert(tk.END, "https://github.com/JakeOrona/RandEmailAlias/releases")
+        url_text.pack()
+        
+        # Run the info window's event loop
+        self.info_window.mainloop()
+
+    """def toggle_settings(self):
         # Toggle the visibility of the settings section
-        if self.settings_options_frame.winfo_ismapped():
+        if self.info.winfo_ismapped():
             self.settings_options_frame.grid_forget()
             self.settings_button.config(text="View Settings")
         else:
             self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
-            self.settings_button.config(text="Hide Settings")
-
-    def name_override(self, toggle):
-        if toggle: self.override_name = toggle
-        else: self.override_name = False
+            self.settings_button.config(text="Hide Settings")"""
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
