@@ -1,6 +1,7 @@
-# v3.0-beta
+# v3.1-beta
 # Feature Update: 
 # Options Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
+# Save default aliases in info window. App will load defaults so user does not need to edit inputs on each startup.
 
 import random
 import string
@@ -9,6 +10,7 @@ import threading
 import datetime
 import re
 import csv
+import os
 from faker import Faker
 from tkinter import filedialog, messagebox
 
@@ -20,6 +22,9 @@ class RandomEmailAliasGenerator:
 
         # create alias history array
         self.alias_history = []
+
+        # create default input file path
+        self.default_input_file = os.path.join(os.path.expanduser('~'), 'Desktop', 'REAG_default_input.txt')
 
         # Set window size for responsive window
         self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
@@ -44,14 +49,19 @@ class RandomEmailAliasGenerator:
         # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
         self.base_email.grid(row=0, column=0, padx=2, pady=3)
-        self.base_email.insert(0, "Enter Base Email")
+        # self.base_email.insert(0, "Enter Base Email")
         self.base_email.focus()
         self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
         self.base_alias.grid(row=1, column=0, padx=2, pady=3)
-        self.base_alias.insert(0, "Enter Base Alias")
+        # self.base_alias.insert(0, "Enter Base Alias")
+
+        # Load default input focus and select all
+        self.load_default_input()
+        self.base_email.focus()
+        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
@@ -77,13 +87,13 @@ class RandomEmailAliasGenerator:
         cn_checkbutton = tk.Checkbutton(options_frame, text=f"Company Alias", variable=cn_toggle, onvalue=True, offvalue=False)
         cn_checkbutton.grid(row=3, column=0, padx=2, pady=2)
 
-        # Generated email alias label and output field
+        # Generated email alias output field and label
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
         self.email_alias = tk.Entry(buttons_frame, width=25)
         self.email_alias.grid(row=5, column=0, padx=5, pady=5)
 
         # Random email button info
-        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=2, pady=1)
+        tk.Label(buttons_frame, text="ie: edit+TomJones@this.com").grid(row=1, column=0, columnspan=1, padx=2, pady=1)
 
         # Generate random email button
         self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=lambda :self.generate_random_email_alias(ts_toggle, cn_toggle))
@@ -94,7 +104,7 @@ class RandomEmailAliasGenerator:
         self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
         
         # Base alias email button info
-        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=2, pady=1)
+        tk.Label(buttons_frame, text="ie: edit+TEST.TomJones@this.com").grid(row=3, column=0, columnspan=1, padx=2, pady=1)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
@@ -119,8 +129,37 @@ class RandomEmailAliasGenerator:
         self.info_button = tk.Button(self.master, text="info", command=self.open_info)
         self.info_button.grid(row=0, column=1, columnspan=1, padx=2, pady=3)
 
-    def show_alias_history(self):
+    def load_default_input(self):
+        if os.path.isfile(self.default_input_file):
+            with open(self.default_input_file, 'r') as file:
+                lines = file.readlines()
+                if len(lines) >= 2:
+                    base_email = lines[0].strip()
+                    base_alias = lines[1].strip()
+                    self.base_email.delete(0, tk.END)
+                    self.base_email.insert(0, base_email)
+                    self.base_alias.delete(0, tk.END)
+                    self.base_alias.insert(0, base_alias)
+        else:
+            with open(self.default_input_file, 'w') as file:
+                file.write('edit@this.com\n')
+                file.write('baseAlias\n')
+                self.base_email.delete(0, tk.END)
+                self.base_email.insert(0, "edit@this.com")
+                self.base_alias.delete(0, tk.END)
+                self.base_alias.insert(0, 'baseAlias')
 
+    def save_default_input(self):
+        with open(self.default_input_file, 'w') as file:
+            file.write(self.base_email.get() + '\n')
+            file.write(self.base_alias.get() + '\n')
+        self.confirmation_label.config(text="Defaults Saved", fg="White", bg="Blue")
+        # Reset label text after 2 seconds
+        t = threading.Timer(2.0, self.reset_confirmation)
+        t.start()
+
+
+    def show_alias_history(self):
         # Check if history frame already exists
         if hasattr(self, 'history_frame'):
             self.toggle_history()
@@ -142,7 +181,7 @@ class RandomEmailAliasGenerator:
 
             # Create a Text widget to display the history
             self.history_text = tk.Text(self.history_frame, height=15, width=75)
-            self.history_text.grid(row=1, column=0, columnspan=1, padx=2, pady=3, sticky="nsew")
+            self.history_text.grid(row=1, column=0, columnspan=1, rowspan=3, padx=2, pady=3, sticky="nsew")
 
             # Save alias history button
             self.save_history_button = tk.Button(history_function_frame, text="Save History", command=self.save_alias_history)
@@ -181,7 +220,7 @@ class RandomEmailAliasGenerator:
         if messagebox.askyesno("Warning", "You are about to clear Alias History. Do you want to proceed?"):
             self.alias_history.clear()
             self.update_history_display()
-            self.confirmation_label.config(text="Alias History Cleared", fg="White", bg="Green")
+            self.confirmation_label.config(text="Alias History Cleared", fg="White", bg="Blue")
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
 
@@ -202,7 +241,7 @@ class RandomEmailAliasGenerator:
                     else:
                         writer.writerow([alias, "", ""])  # Write empty values if pattern not matched
 
-            self.confirmation_label.config(text="Alias History Saved", fg="White", bg="Green")
+            self.confirmation_label.config(text="Alias History Saved", fg="White", bg="Blue")
             t = threading.Timer(2.0, self.reset_confirmation)
             t.start()
 
@@ -229,7 +268,7 @@ class RandomEmailAliasGenerator:
                     self.history_text.insert(tk.END, alias + "\n")
                 self.history_text.see(tk.END)  # Scroll to the end of the text
                 # update confrimation
-                self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Green")
+                self.confirmation_label.config(text="Alias History Loaded", fg="White", bg="Blue")
                 t = threading.Timer(2.0, self.reset_confirmation)
                 t.start()
 
@@ -256,7 +295,15 @@ class RandomEmailAliasGenerator:
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
 
-            if ts_toggle.get():
+            if ts_toggle.get() and cn_toggle.get():
+                random_string = ''.join(timestamp)
+                fake_name = Faker()
+                random_company_name = fake_name.company()
+                random_company = "".join(random_company_name.replace(' ', '').replace(',', ''))
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"{username}+{random_company}.{random_string}@{domain}")
+
+            elif ts_toggle.get():
                 random_string = ''.join(timestamp)
                 self.email_alias.delete(0, tk.END)
                 self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
@@ -307,7 +354,15 @@ class RandomEmailAliasGenerator:
             if self.is_valid_base_email(base_email):
                 username, domain = base_email.split('@')
 
-                if ts_toggle.get():
+                if ts_toggle.get() and cn_toggle.get():
+                    random_string = ''.join(timestamp)
+                    fake_name = Faker()
+                    random_company_name = fake_name.company()
+                    random_company = "".join(random_company_name.replace(' ', '').replace(',', ''))
+                    self.email_alias.delete(0, tk.END)
+                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_company}.{random_string}@{domain}")
+
+                elif ts_toggle.get():
                     random_string = ''.join(timestamp)
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
@@ -325,7 +380,7 @@ class RandomEmailAliasGenerator:
                     random_full_name = fake_name.name()
                     random_name = "".join(random_full_name.split())
                     self.email_alias.delete(0, tk.END)
-                    self.email_alias.insert(0, f"{username}+{random_name}@{domain}")
+                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_name}@{domain}")
 
                 if copy_to_clipboard:
                     self.copy_to_clipboard()
@@ -417,26 +472,34 @@ class RandomEmailAliasGenerator:
                               " This application generates random email aliases based on a few generation rules.\n")
         title_label.pack()
 
-        input_validation_label = tk.Label(self.info_window, text=f"Input Validation:\n"
+        input_validation_Title = tk.Label(self.info_window, text=f"Input Validation:", font="bold")
+        input_validation_Title.pack()
+        input_validation_info = tk.Label(self.info_window, text=
                               "There is no character limit validation to input, user beware.\n"
                               "Base email input will check for a string in the following format: '<username>@<domain>.<TLD>'.\n"
                               "Base alise input will check for a string in the following format: '[a-zA-Z0-9._%-]'.\n"
                               "(Any uppercase or lowercase letter (a-z, A-Z), digit (0-9), period (.), underscore (_), percent symbol (%), or hyphen (-))\n")
-        input_validation_label.pack()
+        input_validation_info.pack()
 
-        options_label = tk.Label(self.info_window, text=f"Customization Options:\n"
+        options_Title = tk.Label(self.info_window, text=f"Customization Options:", font="bold")
+        options_Title.pack()
+        options_info = tk.Label(self.info_window, text=
                                  "Default alias generation creates an email with random first and last name.\n"
                                  "Timestamp Alias will override alias generation with the current timestamp.\n"
-                                 "Company Alias will generate company names instead of first and last name aliases.\n")
-        options_label.pack()
-        # Add more widgets as needed
-        description_label = tk.Label(self.info_window, text="----------")
-        description_label.pack()
+                                 "Company Alias will generate company names instead of first and last name aliases.\n"
+                                 "Save current base email and alias as defaults for app launch. File saved to desktop.\n")
+        options_info.pack()
+        
+        default_email_label = tk.Label(self.info_window, text="Save current base email and alias", font="bold")
+        default_email_label.pack()
 
-        description_text = tk.Label(self.info_window, text="Program Description:")
-        description_text.pack()
+        default_email_button = tk.Button(self.info_window, text="Save Defaults", command=self.save_default_input)
+        default_email_button.pack()
 
-        version_label = tk.Label(self.info_window, text="Version: 0.2.5.3-beta")
+        program_info = tk.Label(self.info_window, text=f"\nProgram Description:")
+        program_info.pack()
+
+        version_label = tk.Label(self.info_window, text="Version: 0.3.1-beta")
         version_label.pack()
 
         version_text = tk.Label(self.info_window, text=f"Maintained and Programed by Jake.\n"
