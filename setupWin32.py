@@ -12,7 +12,9 @@ build_exe_options = {
     "threading",
     "datetime",
     "re",
-    "faker"],
+    "faker",
+    "os"
+    ],
     "include_files": []
 }
 
