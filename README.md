@@ -11,8 +11,7 @@ Alias Customization: Added Alias options to adjust alias output
 - Default generation will output first and last name alias
 
 Info Button: Added button to display general info about the app and save default input.
-- Save default aliases in info window. App will load defaults so user does not need to edit inputs on each startup.
-- Save current base email and alias as defaults for app launch. File saved to desktop.
+- Save base email and alias as defaults in info window. App will load defaults so user does not need to edit inputs on each startup. File saved as .txt to desktop.
 
 Minor UI and Bug Fixes
 
