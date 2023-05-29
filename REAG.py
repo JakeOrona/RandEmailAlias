@@ -1,6 +1,6 @@
-# v2.5.3-beta
+# v3.0-beta
 # Feature Update: 
-# Settings Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
+# Options Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
 
 import random
 import string

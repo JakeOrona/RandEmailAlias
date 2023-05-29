@@ -3,7 +3,7 @@
 import unittest
 import tkinter as tk
 import threading
-from REAG_2_5_b import RandomEmailAliasGenerator as REAG
+from REAG import RandomEmailAliasGenerator as REAG
 
 class AppFunctionalityTest(unittest.TestCase):
     @classmethod
