@@ -30,8 +30,8 @@ class RandomEmailAliasGenerator:
         base_email_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
         # Create new frame for customize options settings
-        options_frame = tk.Frame(self.master,  relief="groove")
-        options_frame.grid(row=1, column=0, columnspan=1, padx=2, pady=3)
+        options_frame = tk.Frame(self.master,  relief="sunken", borderwidth=1)
+        options_frame.grid(row=1, column=0, columnspan=1, rowspan=1, padx=2, pady=3)
 
         # Create new frame for function buttons
         buttons_frame = tk.Frame(self.master, relief="groove")
@@ -58,17 +58,24 @@ class RandomEmailAliasGenerator:
         self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
 
         # Label for Options Frame
-        self.options_label = tk.Label(options_frame, text="Alias Options").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
+        self.options_label = tk.Label(options_frame, text="Alias Options:").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
+
+        # Toggle for full name alias
+        # self.default_alias_label = tk.Label(options_frame, text="Name Alias (Default)")
+        # self.default_alias_label.grid(row=1, column=0, padx=2, pady=2)
+        # fn_toggle = tk.BooleanVar()
+        # fn_checkbutton = tk.Checkbutton(options_frame, text=f"Name Alias (Default)", variable=fn_toggle, onvalue=True, offvalue=False)
+        # fn_checkbutton.grid(row=1, column=0, padx=2, pady=2)
 
         # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        ts_checkbutton = tk.Checkbutton(options_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
-        ts_checkbutton.grid(row=1, column=0, padx=2, pady=2)
+        ts_checkbutton = tk.Checkbutton(options_frame, text=f"Timestamp Alias", variable=ts_toggle, onvalue=True, offvalue=False)
+        ts_checkbutton.grid(row=2, column=0, padx=2, pady=2)
 
         # Toggle for company name alias
         cn_toggle = tk.BooleanVar()
-        cn_checkbutton = tk.Checkbutton(options_frame, text=f"Company Name Override", variable=cn_toggle, onvalue=True, offvalue=False)
-        cn_checkbutton.grid(row=2, column=0, padx=2, pady=2)
+        cn_checkbutton = tk.Checkbutton(options_frame, text=f"Company Alias", variable=cn_toggle, onvalue=True, offvalue=False)
+        cn_checkbutton.grid(row=3, column=0, padx=2, pady=2)
 
         # Generated email alias label and output field
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
@@ -79,7 +86,7 @@ class RandomEmailAliasGenerator:
         tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=2, pady=1)
 
         # Generate random email button
-        self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=lambda :self.generate_random_email_alias(cn_toggle))
+        self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=lambda :self.generate_random_email_alias(ts_toggle, cn_toggle))
         self.generate_button.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
         # Generate email base alias button
@@ -250,12 +257,12 @@ class RandomEmailAliasGenerator:
             username, domain = base_email.split('@')
 
             if ts_toggle.get():
-                    random_string = ''.join(timestamp)
-                    self.email_alias.delete(0, tk.END)
-                    self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
+                random_string = ''.join(timestamp)
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
 
             # check for company name override
-            if cn_toggle.get():
+            elif cn_toggle.get():
                 # Generate fake company name
                 fake_name = Faker()
                 random_company_name = fake_name.company()
@@ -410,16 +417,17 @@ class RandomEmailAliasGenerator:
                               " This application generates random email aliases based on a few generation rules.\n")
         title_label.pack()
 
-        input_validation_label = tk.Label(self.info_window, text="Input Validation:\n"
+        input_validation_label = tk.Label(self.info_window, text=f"Input Validation:\n"
                               "There is no character limit validation to input, user beware.\n"
                               "Base email input will check for a string in the following format: '<username>@<domain>.<TLD>'.\n"
                               "Base alise input will check for a string in the following format: '[a-zA-Z0-9._%-]'.\n"
-                              "(Any uppercase or lowercase letter (a-z, A-Z), digit (0-9), period (.), underscore (_), percent symbol (%), or hyphen (-)\n")
+                              "(Any uppercase or lowercase letter (a-z, A-Z), digit (0-9), period (.), underscore (_), percent symbol (%), or hyphen (-))\n")
         input_validation_label.pack()
 
-        options_label = tk.Label(self.info_window, text="Customization Options:\n"
-                              "Timestamp Override will override alias generation with the current timestamp.\n"
-                              "Company Name Override will generate company names instead of first and last name aliases.\n")
+        options_label = tk.Label(self.info_window, text=f"Customization Options:\n"
+                                 "Default alias generation creates an email with random first and last name.\n"
+                                 "Timestamp Alias will override alias generation with the current timestamp.\n"
+                                 "Company Alias will generate company names instead of first and last name aliases.\n")
         options_label.pack()
         # Add more widgets as needed
         description_label = tk.Label(self.info_window, text="----------")
