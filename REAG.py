@@ -144,6 +144,10 @@ class RandomEmailAliasGenerator:
             with open(self.default_input_file, 'w') as file:
                 file.write('edit@this.com\n')
                 file.write('baseAlias\n')
+                self.base_email.delete(0, tk.END)
+                self.base_email.insert(0, "edit@this.com")
+                self.base_alias.delete(0, tk.END)
+                self.base_alias.insert(0, 'baseAlias')
 
     def save_default_input(self):
         with open(self.default_input_file, 'w') as file:
