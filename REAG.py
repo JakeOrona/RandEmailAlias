@@ -1,5 +1,6 @@
-# v2.5.2-beta
-# Feature Update: Removed feeling lucking frame. Feeling lucky outputs to history frame with * appened to timestamp.
+# v3.0-beta
+# Feature Update: 
+# Options Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
 
 import random
 import string
@@ -8,6 +9,7 @@ import threading
 import datetime
 import re
 import csv
+from faker import Faker
 from tkinter import filedialog, messagebox
 
 class RandomEmailAliasGenerator:
@@ -20,37 +22,60 @@ class RandomEmailAliasGenerator:
         self.alias_history = []
 
         # Set window size for responsive window
-        self.master.rowconfigure((0,1,2), weight=1, minsize=30)
-        self.master.columnconfigure((0), weight=1, minsize=30)
+        self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
+        self.master.columnconfigure((0,1,2), weight=1, minsize=30)
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, relief="groove")
-        base_email_frame.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
+        base_email_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create new frame for all buttons
+        # Create new frame for customize options settings
+        options_frame = tk.Frame(self.master,  relief="sunken", borderwidth=1)
+        options_frame.grid(row=1, column=0, columnspan=1, rowspan=1, padx=2, pady=3)
+
+        # Create new frame for function buttons
         buttons_frame = tk.Frame(self.master, relief="groove")
-        buttons_frame.grid(row=1, column=0, columnspan=1, padx=5, pady=3)
+        buttons_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create new frame for feeling lucky output
-        feeling_lucky_output_frame = tk.Frame(self.master,  relief="groove")
-        feeling_lucky_output_frame.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
+        # Create new frame for feeling lucky
+        feeling_lucky_frame = tk.Frame(self.master,  relief="groove")
+        feeling_lucky_frame.grid(row=3, column=0, columnspan=1, padx=2, pady=3)
 
-        # Base email input field in base_email_frame
+        # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
-        self.base_email.grid(row=0, column=0, padx=10, pady=5)
+        self.base_email.grid(row=0, column=0, padx=2, pady=3)
         self.base_email.insert(0, "Enter Base Email")
         self.base_email.focus()
         self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
-        self.base_alias.grid(row=1, column=0, padx=5, pady=5)
+        self.base_alias.grid(row=1, column=0, padx=2, pady=3)
         self.base_alias.insert(0, "Enter Base Alias")
 
-         # Toggle for timestamp alias
+        # Label to display confirmation message
+        self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
+        self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
+
+        # Label for Options Frame
+        self.options_label = tk.Label(options_frame, text="Alias Options:").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
+
+        # Toggle for full name alias
+        # self.default_alias_label = tk.Label(options_frame, text="Name Alias (Default)")
+        # self.default_alias_label.grid(row=1, column=0, padx=2, pady=2)
+        # fn_toggle = tk.BooleanVar()
+        # fn_checkbutton = tk.Checkbutton(options_frame, text=f"Name Alias (Default)", variable=fn_toggle, onvalue=True, offvalue=False)
+        # fn_checkbutton.grid(row=1, column=0, padx=2, pady=2)
+
+        # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
-        checkbutton = tk.Checkbutton(base_email_frame, text=f"Timestamp Alias Override", variable=ts_toggle, onvalue=True, offvalue=False)
-        checkbutton.grid(row=2, column=0, padx=5, pady=2)
+        ts_checkbutton = tk.Checkbutton(options_frame, text=f"Timestamp Alias", variable=ts_toggle, onvalue=True, offvalue=False)
+        ts_checkbutton.grid(row=2, column=0, padx=2, pady=2)
+
+        # Toggle for company name alias
+        cn_toggle = tk.BooleanVar()
+        cn_checkbutton = tk.Checkbutton(options_frame, text=f"Company Alias", variable=cn_toggle, onvalue=True, offvalue=False)
+        cn_checkbutton.grid(row=3, column=0, padx=2, pady=2)
 
         # Generated email alias label and output field
         tk.Label(buttons_frame, text="Magic Output:").grid(row=4, column=0, padx=5, pady=5)
@@ -58,33 +83,29 @@ class RandomEmailAliasGenerator:
         self.email_alias.grid(row=5, column=0, padx=5, pady=5)
 
         # Random email button info
-        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=5, pady=1)
+        tk.Label(buttons_frame, text="ie: jake+abc123@gmail.com").grid(row=1, column=0, columnspan=1, padx=2, pady=1)
 
         # Generate random email button
-        self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=self.generate_random_email_alias)
-        self.generate_button.grid(row=0, column=0, columnspan=1, padx=5, pady=5)
+        self.generate_button = tk.Button(buttons_frame, text="Generate Random Alias", command=lambda :self.generate_random_email_alias(ts_toggle, cn_toggle))
+        self.generate_button.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
         # Generate email base alias button
-        self.generate_alias_button = tk.Button(buttons_frame, text="Generate Using Base Alias", command=lambda: self.generate_base_alias_email_alias(ts_toggle))
-        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=5, pady=5)
+        self.generate_alias_button = tk.Button(buttons_frame, text="Generate Using Base Alias", command=lambda: self.generate_base_alias_email_alias(ts_toggle, cn_toggle))
+        self.generate_alias_button.grid(row=2, column=0, columnspan=1, padx=2, pady=3)
         
         # Base alias email button info
-        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(buttons_frame, text="ie: jake+TEST.abc123@gmail.com").grid(row=3, column=0, columnspan=1, padx=2, pady=1)
 
         # Copy to Clipboard button
         self.copy_button = tk.Button(buttons_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
-        self.copy_button.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
-
-        # Label to display confirmation message
-        self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
-        self.confirmation_label.grid(row=7, column=0, padx=5, pady=5)
+        self.copy_button.grid(row=6, column=0, columnspan=2, padx=2, pady=3)
 
         # Generate 10 aliases button info
-        tk.Label(feeling_lucky_output_frame, text="Generate 10 aliases using base alias").grid(row=0, column=0, columnspan=1, padx=5, pady=5)
+        tk.Label(feeling_lucky_frame, text="Generate 10 aliases using base alias").grid(row=1, column=0, columnspan=1, padx=5, pady=1)
 
         # Generate 10 aliases button
-        self.lucky_button = tk.Button(feeling_lucky_output_frame, text="Feeling Lucky", command=self.feeling_lucky)
-        self.lucky_button.grid(row=1, column=0, columnspan=1, padx=5, pady=5)
+        self.lucky_button = tk.Button(feeling_lucky_frame, text="Feeling Lucky", command=lambda: self.feeling_lucky(cn_toggle))
+        self.lucky_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
         
         # Feeling lucky output field
         # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
@@ -92,7 +113,11 @@ class RandomEmailAliasGenerator:
 
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
-        self.alias_history_button.grid(row=1, column=1, padx=5, pady=10)
+        self.alias_history_button.grid(row=1, column=1, rowspan=3, padx=2, pady=10)
+
+        # Info button
+        self.info_button = tk.Button(self.master, text="info", command=self.open_info)
+        self.info_button.grid(row=0, column=1, columnspan=1, padx=2, pady=3)
 
     def show_alias_history(self):
 
@@ -222,7 +247,7 @@ class RandomEmailAliasGenerator:
             return bool(re.match(pattern, alias))
         else: return False
     
-    def generate_random_email_alias(self, copy_to_clipboard=True):
+    def generate_random_email_alias(self, ts_toggle, cn_toggle, copy_to_clipboard=True):
         """Generates a random email alias based on a base email. 6 chars"""
         base_email = self.base_email.get()
         now = datetime.datetime.utcnow()
@@ -230,9 +255,28 @@ class RandomEmailAliasGenerator:
         # check for valid base email
         if self.is_valid_base_email(base_email):
             username, domain = base_email.split('@')
-            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-            self.email_alias.delete(0, tk.END)
-            self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
+
+            if ts_toggle.get():
+                random_string = ''.join(timestamp)
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"{username}+{random_string}@{domain}")
+
+            # check for company name override
+            elif cn_toggle.get():
+                # Generate fake company name
+                fake_name = Faker()
+                random_company_name = fake_name.company()
+                random_company = "".join(random_company_name.replace(' ', '').replace(',', ''))
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"{username}+{random_company}@{domain}")
+
+            else:
+                # Generate fake name
+                fake_name = Faker()
+                random_full_name = fake_name.name()
+                random_name = "".join(random_full_name.split())
+                self.email_alias.delete(0, tk.END)
+                self.email_alias.insert(0, f"{username}+{random_name}@{domain}")
 
             if copy_to_clipboard:
                 self.copy_to_clipboard()
@@ -240,7 +284,7 @@ class RandomEmailAliasGenerator:
                 # Add alias to history
                 self.alias_history.append(self.email_alias.get() + " | Timestamp: " + timestamp)
 
-                 # Check if the history window exists before updating the display
+                # Check if the history window exists before updating the display
                 if hasattr(self, 'history_text'):
                     if self.history_text.winfo_exists():  # Check if history_text widget exists and is open
                         self.update_history_display()
@@ -251,7 +295,7 @@ class RandomEmailAliasGenerator:
             self.email_alias.insert(0, f"ENTER A VALID BASE EMAIL")
             self.error_confirmation()
 
-    def generate_base_alias_email_alias(self, ts_toggle, copy_to_clipboard=True):
+    def generate_base_alias_email_alias(self, ts_toggle, cn_toggle, copy_to_clipboard=True):
         """Generates a random email alias based on a base email and base alias. 6 chars"""
         base_email = self.base_email.get()
         base_alias = self.base_alias.get()
@@ -267,10 +311,21 @@ class RandomEmailAliasGenerator:
                     random_string = ''.join(timestamp)
                     self.email_alias.delete(0, tk.END)
                     self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
-                else:
-                    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+
+                elif cn_toggle.get():
+                    # Generate fake company name
+                    fake_name = Faker()
+                    random_company_name = fake_name.company()
+                    random_company = "".join(random_company_name.replace(' ', '').replace(',', ''))
                     self.email_alias.delete(0, tk.END)
-                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_string}@{domain}")
+                    self.email_alias.insert(0, f"{username}+{base_alias}.{random_company}@{domain}")
+                else:
+                    # Generate fake name
+                    fake_name = Faker()
+                    random_full_name = fake_name.name()
+                    random_name = "".join(random_full_name.split())
+                    self.email_alias.delete(0, tk.END)
+                    self.email_alias.insert(0, f"{username}+{random_name}@{domain}")
 
                 if copy_to_clipboard:
                     self.copy_to_clipboard()
@@ -289,7 +344,7 @@ class RandomEmailAliasGenerator:
             self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
 
-    def feeling_lucky(self):
+    def feeling_lucky(self, cn_toggle):
         """Generates 10 random email aliases at once using base_alias"""
         base_email = self.base_email.get()
         base_alias = self.base_alias.get()
@@ -300,21 +355,45 @@ class RandomEmailAliasGenerator:
             # Check for valid base email
             if self.is_valid_base_email(base_email):
                 username, domain = base_email.split('@')
-                random_aliases = [f"{username}+{base_alias}.{''.join(random.choices(string.ascii_letters + string.digits, k=6))}@{domain}" for i in range(10)]
-                # self.feeling_lucky_output.delete('1.0', tk.END)
-                # self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
-                # Click confirmation prompt
-                self.generate_click_confirmation(self.lucky_button)
-                self.confirmation_label.config(text="10x Alias", fg="White", bg="Green")
-                t = threading.Timer(1.0, self.reset_confirmation)
-                t.start()
-                
-                index='1.0'
-                for alias in random_aliases:
-                    self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
-                    # index = self.feeling_lucky_output.index(f"{index}+1c")  # Increment index to the next line
-                # Update History Display after appending lucky output
-                self.update_history_display()
+                fake_name = Faker()
+
+                if cn_toggle.get():
+                    #random_full_name = fake_name.name()
+                    #random_name = "".join(random_full_name.split())
+                    random_aliases = [f"{username}+{base_alias}.{''.join(fake_name.company().replace(' ', '').replace(',', ''))}@{domain}" for i in range(10)]
+                    # self.feeling_lucky_output.delete('1.0', tk.END)
+                    # self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
+                    
+                    for alias in random_aliases:
+                        self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
+
+                    # Click confirmation prompt
+                    self.generate_click_confirmation(self.lucky_button)
+                    self.confirmation_label.config(text="10x Alias", fg="White", bg="Green")
+                    t = threading.Timer(1.0, self.reset_confirmation)
+                    t.start()
+
+                    # Update History Display after appending lucky output
+                    self.update_history_display()
+
+                else:
+                    #random_full_name = fake_name.name()
+                    #random_name = "".join(random_full_name.split())
+                    random_aliases = [f"{username}+{base_alias}.{''.join(fake_name.name().split())}@{domain}" for i in range(10)]
+                    # self.feeling_lucky_output.delete('1.0', tk.END)
+                    # self.feeling_lucky_output.insert('1.0', '\n'.join(random_aliases))
+
+                    for alias in random_aliases:
+                        self.alias_history.append(alias + " | Timestamp: " + timestamp + "*")
+
+                    # Click confirmation prompt
+                    self.generate_click_confirmation(self.lucky_button)
+                    self.confirmation_label.config(text="10x Alias", fg="White", bg="Green")
+                    t = threading.Timer(1.0, self.reset_confirmation)
+                    t.start()
+
+                    # Update History Display after appending lucky output
+                    self.update_history_display()
             else:
                 # Display error message
                 self.email_alias.delete(0, tk.END)
@@ -325,6 +404,60 @@ class RandomEmailAliasGenerator:
             self.email_alias.delete(0, tk.END)
             self.email_alias.insert(0, f"ENTER A VALID BASE ALIAS")
             self.error_confirmation()
+
+    def open_info(self):
+        # Create a Frame for the collapsible settings section
+        self.info_window = tk.Toplevel(self.master)
+        self.info_window.title("-REAG Info-")
+        self.info_window.focus_force()
+
+        # Create and configure widgets in the info window
+        title_label = tk.Label(self.info_window, 
+                              text=f"Thanks for downloading REAG (Random Email Alias Generator).\n"
+                              " This application generates random email aliases based on a few generation rules.\n")
+        title_label.pack()
+
+        input_validation_label = tk.Label(self.info_window, text=f"Input Validation:\n"
+                              "There is no character limit validation to input, user beware.\n"
+                              "Base email input will check for a string in the following format: '<username>@<domain>.<TLD>'.\n"
+                              "Base alise input will check for a string in the following format: '[a-zA-Z0-9._%-]'.\n"
+                              "(Any uppercase or lowercase letter (a-z, A-Z), digit (0-9), period (.), underscore (_), percent symbol (%), or hyphen (-))\n")
+        input_validation_label.pack()
+
+        options_label = tk.Label(self.info_window, text=f"Customization Options:\n"
+                                 "Default alias generation creates an email with random first and last name.\n"
+                                 "Timestamp Alias will override alias generation with the current timestamp.\n"
+                                 "Company Alias will generate company names instead of first and last name aliases.\n")
+        options_label.pack()
+        # Add more widgets as needed
+        description_label = tk.Label(self.info_window, text="----------")
+        description_label.pack()
+
+        description_text = tk.Label(self.info_window, text="Program Description:")
+        description_text.pack()
+
+        version_label = tk.Label(self.info_window, text="Version: 0.2.5.3-beta")
+        version_label.pack()
+
+        version_text = tk.Label(self.info_window, text=f"Maintained and Programed by Jake.\n"
+                                "Stay up to date at:")
+        version_text.pack()
+
+        url_text = tk.Text(self.info_window, height=1, width=52)
+        url_text.insert(tk.END, "https://github.com/JakeOrona/RandEmailAlias/releases")
+        url_text.pack()
+        
+        # Run the info window's event loop
+        self.info_window.mainloop()
+
+    """def toggle_settings(self):
+        # Toggle the visibility of the settings section
+        if self.info.winfo_ismapped():
+            self.settings_options_frame.grid_forget()
+            self.settings_button.config(text="View Settings")
+        else:
+            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
+            self.settings_button.config(text="Hide Settings")"""
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
@@ -339,7 +472,7 @@ class RandomEmailAliasGenerator:
 
     def generate_click_confirmation(self, button):
         """When button clicked display confirmation"""
-        button.config(text="ʕ º ᴥ ºʔ", fg="White", bg="Blue")
+        button.config(text="ʕ º ᴥ ºʔ")
         # Reset label text after 0.1 second
         self.master.after(100, self.reset_button, button)
 
@@ -352,13 +485,13 @@ class RandomEmailAliasGenerator:
     def reset_button(self, button):
         """Reset generate email button text"""
         if button == self.generate_button:
-            button.config(text="Generate Random Alias", fg= "Black", bg= "White")
+            button.config(text="Generate Random Alias")
         elif button == self.generate_alias_button:
-            button.config(text="Generate Using Base Alias", fg= "Black", bg= "White")
+            button.config(text="Generate Using Base Alias")
         elif button == self.lucky_button:
-            button.config(text="Feeling Lucky", fg= "Black", bg= "White")
+            button.config(text="Feeling Lucky")
         elif button == self.copy_button:
-            button.config(text="Copy to Clipboard", fg= "Black", bg= "White")
+            button.config(text="Copy to Clipboard")
         else:
             return
         
