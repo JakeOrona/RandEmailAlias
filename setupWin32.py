@@ -24,7 +24,7 @@ if sys.platform == "win32":
 
 setup(
     name="RandEmailAliasGenerator",
-    version="0.3.0.0",
+    version="0.3.1.0",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
     executables=[Executable("REAG.py", base=base)]

@@ -1,16 +1,18 @@
-# RandEmailAlias_v3.0-beta
+# RandEmailAlias_v3.1-beta
 
-Generate an email with random first and last name alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp or company name. Load and save alias history as a .csv file.
+Generate an email with random first and last name alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp or company name. Load and save alias history as a .csv file. Save default input values.
 
 Windows app no longer runs via system tool bar. This function was dropped for code refactor, it will return in a future release.
 
-## v3.0-beta New Features:
+## v3.1-beta New Features:
 Alias Customization: Added Alias options to adjust alias output
-- 'Timestamp Alias' will generate an email with a timestamp alias
+- 'Timestamp Alias' will generate an email with a timestamp alias. WILL OVERRIDE COMPANY ALIAS.
 - 'Company Alias' will generate an email with a company name alilas
 - Default generation will output first and last name alias
 
-Info Button: Added button to display general info about the app.
+Info Button: Added button to display general info about the app and save default input.
+- Save default aliases in info window. App will load defaults so user does not need to edit inputs on each startup.
+- Save current base email and alias as defaults for app launch. File saved to desktop.
 
 Minor UI and Bug Fixes
 
