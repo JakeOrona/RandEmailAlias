@@ -58,14 +58,14 @@ class RandomEmailAliasGenerator:
         self.base_alias.grid(row=1, column=0, padx=2, pady=3)
         # self.base_alias.insert(0, "Enter Base Alias")
 
-        # Load default input focus and select all
-        self.load_default_input()
-        self.base_email.focus()
-        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
-
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
         self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
+
+        # Load default input focus and select all
+        self.load_default_input()
+        self.base_email.focus()
+        self.base_email.select_range(0, tk.END)
 
         # Label for Options Frame
         self.options_label = tk.Label(options_frame, text="Alias Options:").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
@@ -140,6 +140,10 @@ class RandomEmailAliasGenerator:
                     self.base_email.insert(0, base_email)
                     self.base_alias.delete(0, tk.END)
                     self.base_alias.insert(0, base_alias)
+                    self.confirmation_label.config(text="Defaults Loaded")
+                    t = threading.Timer(3.0, self.reset_confirmation)
+                    t.start()
+                    
         else:
             with open(self.default_input_file, 'w') as file:
                 file.write('edit@this.com\n')
@@ -148,6 +152,9 @@ class RandomEmailAliasGenerator:
                 self.base_email.insert(0, "edit@this.com")
                 self.base_alias.delete(0, tk.END)
                 self.base_alias.insert(0, 'baseAlias')
+                self.confirmation_label.config(text="Defaults Created")
+                t = threading.Timer(3.0, self.reset_confirmation)
+                t.start()
 
     def save_default_input(self):
         with open(self.default_input_file, 'w') as file:
