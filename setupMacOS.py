@@ -7,12 +7,12 @@ Usage:
 import py2app
 from setuptools import setup
 
-APP = ['RandEmailAlias-mac.py']
+APP = ['REAG.py']
 DATA_FILES = ["resources", "resources/REAG-BG.jpg"]
 OPTIONS = {
     'iconfile': 'resources/REAM_icon.icns',
-    'packages': ['random', 'string', 'smtplib', 'tkinter', 're', 'threading', 'datetime'],
-    'plist': {'CFBundleShortVersionString': '0.2.4.2'}}
+    'packages': ['random', 'string', 'smtplib', 'tkinter', 're', 'threading', 'datetime', 'faker', 'csv'],
+    'plist': {'CFBundleShortVersionString': '0.3.0.0'}}
 
 setup(
     app=APP,

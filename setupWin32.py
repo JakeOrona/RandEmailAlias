@@ -12,7 +12,7 @@ build_exe_options = {
     "threading",
     "datetime",
     "re",
-    ],
+    "faker"],
     "include_files": []
 }
 
@@ -24,8 +24,8 @@ if sys.platform == "win32":
 
 setup(
     name="RandEmailAliasGenerator",
-    version="0.2.5.1",
+    version="0.3.0.0",
     description="R.E.A.G. ʕ º ᴥ ºʔ -BearBones ",
     options={"build_exe": build_exe_options},
-    executables=[Executable("REAG_2_5_b.py", base=base)]
+    executables=[Executable("REAG.py", base=base)]
 )
