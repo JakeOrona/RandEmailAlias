@@ -1,15 +1,18 @@
-# RandEmailAlias_v2.5.1-beta
+# RandEmailAlias_v3.0-beta
 
-Generate an email with random alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp (YY-MM-DD-HH.MM.SS). Load and save alias history as a .csv file.
+Generate an email with random first and last name alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp or company name. Load and save alias history as a .csv file.
 
 Windows app no longer runs via system tool bar. This function was dropped for code refactor, it will return in a future release.
 
-## v2.5.1-beta New Features:
-Alias History: Generated emails are saved to history array with a timestamp. Load and Save history to a .csv file.
-- Click '>>' button to view alias history.
-- Aliases are added to alias history if email generation was successful
-- Aliases are saved in the following format: "Email | Timestamp: YY-MM-DD-HH.MM.SS"
-- If email was generated via 'feeling lucky' button timestap will be appended with "*"
+## v3.0-beta New Features:
+Alias Customization: Added Alias options to adjust alias output
+- 'Timestamp Alias' will generate an email with a timestamp alias
+- 'Company Alias' will generate an email with a company name alilas
+- Default generation will output first and last name alias
+
+Info Button: Added button to display general info about the app.
+
+Minor UI and Bug Fixes
 
 ### Installation:
 Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application from unziped folder.
