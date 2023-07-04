@@ -1,8 +1,6 @@
-# RandEmailAlias_v3.1-beta
+# RandEmailAlias_v3.1.1-beta
 
 Generate an email with random first and last name alias. Also create random email using a base alias. Generate 10 emails using the base alias. Override random alias with a timestamp or company name. Load and save alias history as a .csv file. Save default input values.
-
-Windows app no longer runs via system tool bar. This function was dropped for code refactor, it will return in a future release.
 
 ## v3.1-beta New Features:
 Alias Customization: Added Alias options to adjust alias output
@@ -13,7 +11,8 @@ Alias Customization: Added Alias options to adjust alias output
 Info Button: Added button to display general info about the app and save default input.
 - Save base email and alias as defaults in info window. App will load defaults so user does not need to edit inputs on each startup. File saved as .txt to desktop.
 
-Minor UI and Bug Fixes
+## v3.1.1 UI and Bug Fixes:
+- Locked window size to avoid UI bug, unable to resize window
 
 ### Installation:
 Navigate to the [lastest release in repo](https://github.com/JakeOrona/RandEmailAlias/releases), find the macOS or Windows .zip, download file and unzip. Launch application from unziped folder.
