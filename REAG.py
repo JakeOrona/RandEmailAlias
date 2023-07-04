@@ -1,7 +1,5 @@
-# v3.1-beta
-# Feature Update: 
-# Options Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
-# Save default aliases in info window. App will load defaults so user does not need to edit inputs on each startup.
+# v3.1.1-beta
+# Minor Update: Locked window size to avoid resize bug.
 
 import random
 import string
@@ -26,9 +24,10 @@ class RandomEmailAliasGenerator:
         # create default input file path
         self.default_input_file = os.path.join(os.path.expanduser('~'), 'Desktop', 'REAG_default_input.txt')
 
-        # Set window size for responsive window
-        self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
-        self.master.columnconfigure((0,1,2), weight=1, minsize=30)
+        # Lock window size and set minsize
+        self.master.resizable(False, False)
+        self.master.rowconfigure((0,1,2,3), minsize=30)
+        self.master.columnconfigure((0,1,2), minsize=30)
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, relief="groove")
@@ -140,7 +139,7 @@ class RandomEmailAliasGenerator:
                     self.base_email.insert(0, base_email)
                     self.base_alias.delete(0, tk.END)
                     self.base_alias.insert(0, base_alias)
-                    self.confirmation_label.config(text="Defaults Loaded")
+                    self.confirmation_label.config(text="Defaults Loaded", fg="White", bg="Blue")
                     t = threading.Timer(3.0, self.reset_confirmation)
                     t.start()
                     
@@ -506,7 +505,7 @@ class RandomEmailAliasGenerator:
         program_info = tk.Label(self.info_window, text=f"\nProgram Description:")
         program_info.pack()
 
-        version_label = tk.Label(self.info_window, text="Version: 0.3.1-beta")
+        version_label = tk.Label(self.info_window, text="Version: 0.3.1.1-beta")
         version_label.pack()
 
         version_text = tk.Label(self.info_window, text=f"Maintained and Programed by Jake.\n"
