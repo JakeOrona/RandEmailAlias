@@ -64,13 +64,6 @@ class RandomEmailAliasGenerator:
         # Label for Options Frame
         self.options_label = tk.Label(options_frame, text="Alias Options:").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
 
-        # Toggle for full name alias
-        # self.default_alias_label = tk.Label(options_frame, text="Name Alias (Default)")
-        # self.default_alias_label.grid(row=1, column=0, padx=2, pady=2)
-        # fn_toggle = tk.BooleanVar()
-        # fn_checkbutton = tk.Checkbutton(options_frame, text=f"Name Alias (Default)", variable=fn_toggle, onvalue=True, offvalue=False)
-        # fn_checkbutton.grid(row=1, column=0, padx=2, pady=2)
-
         # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
         ts_checkbutton = tk.Checkbutton(options_frame, text=f"Timestamp Alias", variable=ts_toggle, onvalue=True, offvalue=False)
@@ -151,10 +144,9 @@ class RandomEmailAliasGenerator:
             file.write(self.base_email.get() + '\n')
             file.write(self.base_alias.get() + '\n')
         self.confirmation_label.config(text="Defaults Saved", fg="White", bg="Blue")
-        # Reset label text after 2 seconds
+        # Reset confirmation label text after 2 seconds
         t = threading.Timer(2.0, self.reset_confirmation)
         t.start()
-
 
     def show_alias_history(self):
         # Check if history frame already exists
