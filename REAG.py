@@ -1,8 +1,6 @@
 # v3.1.1-beta
 # Minor Update: Locked window size to avoid resize bug.
 
-import random
-import string
 import tkinter as tk
 import threading
 import datetime
@@ -48,9 +46,6 @@ class RandomEmailAliasGenerator:
         # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
         self.base_email.grid(row=0, column=0, padx=2, pady=3)
-        # self.base_email.insert(0, "Enter Base Email")
-        self.base_email.focus()
-        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
@@ -61,7 +56,7 @@ class RandomEmailAliasGenerator:
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
         self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
 
-        # Load default input focus and select all
+        # Load default input, focus and select all text
         self.load_default_input()
         self.base_email.focus()
         self.base_email.select_range(0, tk.END)
@@ -115,10 +110,6 @@ class RandomEmailAliasGenerator:
         # Generate 10 aliases button
         self.lucky_button = tk.Button(feeling_lucky_frame, text="Feeling Lucky", command=lambda: self.feeling_lucky(cn_toggle))
         self.lucky_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
-        
-        # Feeling lucky output field
-        # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
-        # self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
 
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
@@ -518,15 +509,6 @@ class RandomEmailAliasGenerator:
         
         # Run the info window's event loop
         self.info_window.mainloop()
-
-    """def toggle_settings(self):
-        # Toggle the visibility of the settings section
-        if self.info.winfo_ismapped():
-            self.settings_options_frame.grid_forget()
-            self.settings_button.config(text="View Settings")
-        else:
-            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
-            self.settings_button.config(text="Hide Settings")"""
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
