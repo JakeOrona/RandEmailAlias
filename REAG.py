@@ -31,7 +31,7 @@ class RandomEmailAliasGenerator:
         base_email_frame = tk.Frame(self.master, relief="groove")
         base_email_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create new frame for customize options settings
+        # Create new frame for alias options settings
         options_frame = tk.Frame(self.master,  relief="sunken", borderwidth=1)
         options_frame.grid(row=1, column=0, columnspan=1, rowspan=1, padx=2, pady=3)
 
@@ -215,7 +215,7 @@ class RandomEmailAliasGenerator:
 
     def save_alias_history(self):
         # Prompt the user for a custom file name
-        file_name = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+        file_name = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[(".csv", "*.csv"), (".txt", "*.txt")])
         
         if file_name:
             with open(file_name, "w", newline='') as file:
@@ -237,7 +237,7 @@ class RandomEmailAliasGenerator:
     def load_alias_history(self):
         if messagebox.askyesno("Warning", "Loading a file will overwrite the current alias history. Do you want to proceed?"):
             self.alias_history.clear()
-            file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[(".csv", "*.csv"), (".txt", "*.txt")])
             if file_name:
                 with open(file_name, 'r', newline='') as file:
                     reader = csv.reader(file)
