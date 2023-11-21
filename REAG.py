@@ -1,10 +1,6 @@
-# v3.1-beta
-# Feature Update: 
-# Options Frame: alias generation now uses Faker to generate alias with full name or company name using toggle. Dropped random char generation.
-# Save default aliases in info window. App will load defaults so user does not need to edit inputs on each startup.
+# v3.1.1-beta
+# Minor Update: Locked window size to avoid resize bug.
 
-import random
-import string
 import tkinter as tk
 import threading
 import datetime
@@ -26,15 +22,16 @@ class RandomEmailAliasGenerator:
         # create default input file path
         self.default_input_file = os.path.join(os.path.expanduser('~'), 'Desktop', 'REAG_default_input.txt')
 
-        # Set window size for responsive window
-        self.master.rowconfigure((0,1,2,3), weight=1, minsize=30)
-        self.master.columnconfigure((0,1,2), weight=1, minsize=30)
+        # Lock window size and set minsize
+        self.master.resizable(False, False)
+        self.master.rowconfigure((0,1,2,3), minsize=30)
+        self.master.columnconfigure((0,1,2), minsize=30)
 
         # Create new frame for base input
         base_email_frame = tk.Frame(self.master, relief="groove")
         base_email_frame.grid(row=0, column=0, columnspan=1, padx=2, pady=3)
 
-        # Create new frame for customize options settings
+        # Create new frame for alias options settings
         options_frame = tk.Frame(self.master,  relief="sunken", borderwidth=1)
         options_frame.grid(row=1, column=0, columnspan=1, rowspan=1, padx=2, pady=3)
 
@@ -49,33 +46,23 @@ class RandomEmailAliasGenerator:
         # Base email input field
         self.base_email = tk.Entry(base_email_frame, width=25)
         self.base_email.grid(row=0, column=0, padx=2, pady=3)
-        # self.base_email.insert(0, "Enter Base Email")
-        self.base_email.focus()
-        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
 
         # Base alias input field
         self.base_alias = tk.Entry(base_email_frame, width=25)
         self.base_alias.grid(row=1, column=0, padx=2, pady=3)
         # self.base_alias.insert(0, "Enter Base Alias")
 
-        # Load default input focus and select all
-        self.load_default_input()
-        self.base_email.focus()
-        self.base_email.select_range(0, tk.END)  # Select the entire text in the Entry widget
-
         # Label to display confirmation message
         self.confirmation_label = tk.Label(buttons_frame, text="waiting for input..", fg="White", bg="Green")
         self.confirmation_label.grid(row=7, column=0, padx=2, pady=3)
 
+        # Load default input, focus and select all text
+        self.load_default_input()
+        self.base_email.focus()
+        self.base_email.select_range(0, tk.END)
+
         # Label for Options Frame
         self.options_label = tk.Label(options_frame, text="Alias Options:").grid(row=0, column=0, columnspan=1, padx=2, pady=1)
-
-        # Toggle for full name alias
-        # self.default_alias_label = tk.Label(options_frame, text="Name Alias (Default)")
-        # self.default_alias_label.grid(row=1, column=0, padx=2, pady=2)
-        # fn_toggle = tk.BooleanVar()
-        # fn_checkbutton = tk.Checkbutton(options_frame, text=f"Name Alias (Default)", variable=fn_toggle, onvalue=True, offvalue=False)
-        # fn_checkbutton.grid(row=1, column=0, padx=2, pady=2)
 
         # Toggle for timestamp alias
         ts_toggle = tk.BooleanVar()
@@ -116,10 +103,6 @@ class RandomEmailAliasGenerator:
         # Generate 10 aliases button
         self.lucky_button = tk.Button(feeling_lucky_frame, text="Feeling Lucky", command=lambda: self.feeling_lucky(cn_toggle))
         self.lucky_button.grid(row=0, column=0, columnspan=1, padx=5, pady=3)
-        
-        # Feeling lucky output field
-        # self.feeling_lucky_output = tk.Text(feeling_lucky_output_frame, height=10, width=30)
-        # self.feeling_lucky_output.grid(row=2, column=0, padx=5, pady=10)
 
         # Show Alias History button
         self.alias_history_button = tk.Button(self.master, text=">>\n\n\n>>\n\n\n>>", font="bold", command=self.show_alias_history)
@@ -140,6 +123,10 @@ class RandomEmailAliasGenerator:
                     self.base_email.insert(0, base_email)
                     self.base_alias.delete(0, tk.END)
                     self.base_alias.insert(0, base_alias)
+                    self.confirmation_label.config(text="Defaults Loaded", fg="White", bg="Blue")
+                    t = threading.Timer(3.0, self.reset_confirmation)
+                    t.start()
+                    
         else:
             with open(self.default_input_file, 'w') as file:
                 file.write('edit@this.com\n')
@@ -148,16 +135,18 @@ class RandomEmailAliasGenerator:
                 self.base_email.insert(0, "edit@this.com")
                 self.base_alias.delete(0, tk.END)
                 self.base_alias.insert(0, 'baseAlias')
+                self.confirmation_label.config(text="Defaults Created")
+                t = threading.Timer(3.0, self.reset_confirmation)
+                t.start()
 
     def save_default_input(self):
         with open(self.default_input_file, 'w') as file:
             file.write(self.base_email.get() + '\n')
             file.write(self.base_alias.get() + '\n')
         self.confirmation_label.config(text="Defaults Saved", fg="White", bg="Blue")
-        # Reset label text after 2 seconds
+        # Reset confirmation label text after 2 seconds
         t = threading.Timer(2.0, self.reset_confirmation)
         t.start()
-
 
     def show_alias_history(self):
         # Check if history frame already exists
@@ -226,7 +215,7 @@ class RandomEmailAliasGenerator:
 
     def save_alias_history(self):
         # Prompt the user for a custom file name
-        file_name = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+        file_name = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[(".csv", "*.csv"), (".txt", "*.txt")])
         
         if file_name:
             with open(file_name, "w", newline='') as file:
@@ -248,7 +237,7 @@ class RandomEmailAliasGenerator:
     def load_alias_history(self):
         if messagebox.askyesno("Warning", "Loading a file will overwrite the current alias history. Do you want to proceed?"):
             self.alias_history.clear()
-            file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            file_name = filedialog.askopenfilename(defaultextension=".csv", filetypes=[(".csv", "*.csv"), (".txt", "*.txt")])
             if file_name:
                 with open(file_name, 'r', newline='') as file:
                     reader = csv.reader(file)
@@ -499,7 +488,7 @@ class RandomEmailAliasGenerator:
         program_info = tk.Label(self.info_window, text=f"\nProgram Description:")
         program_info.pack()
 
-        version_label = tk.Label(self.info_window, text="Version: 0.3.1-beta")
+        version_label = tk.Label(self.info_window, text="Version: 0.3.1.1-beta")
         version_label.pack()
 
         version_text = tk.Label(self.info_window, text=f"Maintained and Programed by Jake.\n"
@@ -512,15 +501,6 @@ class RandomEmailAliasGenerator:
         
         # Run the info window's event loop
         self.info_window.mainloop()
-
-    """def toggle_settings(self):
-        # Toggle the visibility of the settings section
-        if self.info.winfo_ismapped():
-            self.settings_options_frame.grid_forget()
-            self.settings_button.config(text="View Settings")
-        else:
-            self.settings_options_frame.grid(row=4, column=0, rowspan=2, padx=2, pady=3, sticky="nsew")
-            self.settings_button.config(text="Hide Settings")"""
 
     def copy_to_clipboard(self):
         """Copies the generated email alias to the clipboard"""
